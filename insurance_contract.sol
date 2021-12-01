@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.6.6;
 
+
 contract Insurance{
 
     address payable us; // the address where we get the fees
@@ -10,9 +11,9 @@ contract Insurance{
     string public property_address;
     address public owner;
     uint256 public payout;
+    bool payout_flag;
 
 
-    //mapping(address => uint) balance;
 
     constructor (address payable _first, address payable _second, string memory _customer, string memory _property_address, uint256 _payout) public {
         us = _first;
@@ -22,6 +23,7 @@ contract Insurance{
         customer_name = _customer;
         property_address = _property_address;
         payout = _payout;
+        payout_flag = false;
     }
 
     receive() external payable{
@@ -31,7 +33,7 @@ contract Insurance{
 
 
     function pay_out() public {
-        require(msg.sender == owner);
+        require(msg.sender == owner && payout_flag == true);
         uint256 payout_amt = payout;
         payout = 0;
         amount -= payout_amt;
@@ -39,7 +41,9 @@ contract Insurance{
         require(success, "Transfer failed.");
     }
 
-
-
+    function set_flag() public{
+        require(msg.sender == owner)
+		payout_flag = true
+    }
 
 }
