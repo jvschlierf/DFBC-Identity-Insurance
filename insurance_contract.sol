@@ -42,8 +42,8 @@ contract Insurance{
     }
 
     function set_flag() public{
-        require(msg.sender == owner)
-		payout_flag = true
+        require(msg.sender == owner);
+		payout_flag = true;
     }
 
 }
