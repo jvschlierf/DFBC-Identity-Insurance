@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract propNFT is ERC721URIStorage, Ownable {
+contract propNFT is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
@@ -17,6 +17,7 @@ contract propNFT is ERC721URIStorage, Ownable {
     function mintNFT(address recipient, string memory tokenURI)
         public onlyOwner
         returns (uint256)
+        _mint(owner, tokenId). //DEFINE OWNER
     {
         _tokenIds.increment();
 
