@@ -11,8 +11,22 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 contract propNFT is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-
-    constructor() public ERC721("propNFT", "NFT") {}
+    
+    struct Property {
+		address _owner;
+		uint sqm; 
+		string _address;
+		uint value;
+	}
+	
+	Property[] public properties;
+	
+	//mapping PropertyID to owner
+	mapping (uint => address) public tokenToOwner;
+    
+    constructor() ERC721("propNFT", "NFT") public {
+    owner = msg.sender // ??
+    }
 
     function mintNFT(address recipient, string memory tokenURI)
         public onlyOwner
