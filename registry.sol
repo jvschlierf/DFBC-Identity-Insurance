@@ -31,7 +31,7 @@ contract  Registry {
     }
 
     mapping (address => Owner) owners;
-    mapping (property => Owner) owned_properties;
+    mapping (Property => Owner) owned_properties;
 
     uint public propertycount;
 
@@ -39,31 +39,32 @@ contract  Registry {
 
     function FirstRegistration (string country, string region, uint zipCode, string city, string street, string streetnum, string addressAdditional, string houseType, uint sqm, uint floor) public { // Add property to 
        
-        registeredPropoerties++;
-        lands[landsCount] = Property(id, country, region, zipCode, city, street, addressAdditional, _ipfsHash, _document);
-        LandOwner[landsCount] = msg.sender;
+        propertycount++;
+        uint id = registeredProperties
+        properties[id] = Property (country, region, zipCode, city, street, addressAdditional, );
+        owned_properties[Property] = msg.sender;
         // emit AddingLand(landsCount);
-        Verify;
+        Verify(id);
     }
 
     function Transfer ()private { //Change in ownership
 
     }
 
-    function Verify () private { //Pull update from Oracle (in regular intervals) from the actual public registry
+    function Verify (uint id) private { //Pull update from Oracle (in regular intervals) from the actual public registry
 
     }
 
-    function Update {  //Change in one of the Property variables
+    function Update () public {  //Change in one of the Property variables
 
     }
 
-    function Notify { //If verify function has detected fraud, notify customer
+    function Notify () public { //If verify function has detected fraud, notify customer
 
 
     }
 
-    function Remove { 
+    function Remove () public { 
 
 
     }
