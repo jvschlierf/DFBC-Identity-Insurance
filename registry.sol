@@ -26,26 +26,31 @@ contract  Registry {
         string codiceFisc;
         string docType;
         string docNumber;
-        
+        bool insured;
+        bool hasNFT; 
     }
 
+    mapping (address => Owner) owners;
+    mapping (property => Owner) owned_properties;
+
+    uint public propertycount;
 
 
 
-    mapping ()
-
-
-
-    function FirstRegistration { // Add property to 
-
+    function FirstRegistration (string country, string region, uint zipCode, string city, string street, string streetnum, string addressAdditional, string houseType, uint sqm, uint floor) public { // Add property to 
+       
+        registeredPropoerties++;
+        lands[landsCount] = Property(id, country, region, zipCode, city, street, addressAdditional, _ipfsHash, _document);
+        LandOwner[landsCount] = msg.sender;
+        // emit AddingLand(landsCount);
         Verify;
     }
 
-    function Transfer { //Change in ownership
+    function Transfer ()private { //Change in ownership
 
     }
 
-    function Verify { //Pull update from Oracle (in regular intervals) from the actual public registry
+    function Verify () private { //Pull update from Oracle (in regular intervals) from the actual public registry
 
     }
 
