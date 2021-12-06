@@ -6,11 +6,13 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract propNFT is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+    
+    Property[] public properties;
+    mapping(uint => bool) _propertyExists; //check not to issue the same token twice
     
     struct Property {
 		address _owner;
@@ -19,7 +21,6 @@ contract propNFT is ERC721, Ownable {
 		uint value;
 	}
 	
-	Property[] public properties;
 	
 	//mapping PropertyID to owner
 	mapping (uint => address) public tokenToOwner;
@@ -28,17 +29,20 @@ contract propNFT is ERC721, Ownable {
     owner = msg.sender // ??
     }
 
-    function mintNFT(address recipient, string memory tokenURI)
+    function mintNFT(address memory recipient, string memory tokenURI) 
         public onlyOwner
         returns (uint256)
         _mint(owner, tokenId). //DEFINE OWNER
     {
+    	//require property has not been taken yet
+    	require(!_propertyExists[_color); //read the value out of the mapping is false, (!false = true)
+					  //i.e. property not taken
         _tokenIds.increment();
-
+	_propertyExists[tokenURI] = true;
         uint256 newItemId = _tokenIds.current();
         _mint(recipient, newItemId);
         _setTokenURI(newItemId, tokenURI);
-
+	
         return newItemId;
     }
 }
