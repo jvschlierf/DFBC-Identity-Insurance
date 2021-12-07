@@ -26,19 +26,19 @@ contract propNFT is ERC721, Ownable {
 	mapping (uint => address) public tokenToOwner;
     
     constructor() ERC721("propNFT", "NFT") public {
-    owner = msg.sender // ??
+    owner = msg.sender; // ??
     }
 
     function mintNFT(address memory recipient, string memory tokenURI) 
         public onlyOwner
-        returns (uint256)
-        _mint(owner, tokenId). //DEFINE OWNER
+        returns (uint256) 
+        // _mint(owner, tokenId); //DEFINE OWNER
     {
     	//require property has not been taken yet
-    	require(!_propertyExists[_color); //read the value out of the mapping is false, (!false = true)
+    	require(!_propertyExists[_color]); //read the value out of the mapping is false, (!false = true)
 					  //i.e. property not taken
         _tokenIds.increment();
-	_propertyExists[tokenURI] = true;
+	    _propertyExists[tokenURI] = true;
         uint256 newItemId = _tokenIds.current();
         _mint(recipient, newItemId);
         _setTokenURI(newItemId, tokenURI);

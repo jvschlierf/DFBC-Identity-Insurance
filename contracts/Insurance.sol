@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
-
 contract Insurance{
 
     address payable us; // the address where we get the fees
@@ -12,8 +11,6 @@ contract Insurance{
     address public owner;
     uint256 public payout;
     bool payout_flag;
-
-
 
     constructor (address payable _first, address payable _second, string memory _customer, string memory _property_address, uint256 _payout) public {
         us = _first;

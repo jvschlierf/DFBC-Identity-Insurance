@@ -32,7 +32,7 @@ contract  Registry {
 
 
 
-    mapping ()
+    // mapping ()
 
 
 
