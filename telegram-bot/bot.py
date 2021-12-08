@@ -2,13 +2,21 @@ import re
 import logging
 import requests
 import telegram
-from telegram.ext import Updater, CommandHandler
-from credentials import BOT_TOKEN, BOT_USER_NAME
+from telegram.ext import (
+    Updater,
+    CommandHandler,
+    MessageHandler,
+    Filters,
+    ConversationHandler,
+    CallbackContext,
+)
+from credentials import BOT_TOKEN, BOT_USER_NAME, APP_URL
+import os
+
+PORT = int(os.environ.get('PORT', 5000))
 
 global bot
-# global BOT_TOKEN
 bot = telegram.Bot(token=BOT_TOKEN)
-
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -83,7 +91,10 @@ def main():
     # dp.add_handler(CommandHandler("pokedex", pokedex))
 
     # Start the Bot
-    updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path=BOT_TOKEN)
+    updater.bot.setWebhook(APP_URL + BOT_TOKEN)
 
     # Run the bot until you press Ctrl-C or shutdown the process
     updater.idle()
