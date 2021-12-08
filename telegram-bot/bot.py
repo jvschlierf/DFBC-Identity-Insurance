@@ -90,13 +90,12 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     # dp.add_handler(CommandHandler("pokedex", pokedex))
 
-    # Start the Bot
     updater.start_webhook(listen="0.0.0.0",
                           port=int(PORT),
-                          url_path=BOT_TOKEN)
-    updater.bot.setWebhook(APP_URL + BOT_TOKEN)
+                          url_path=BOT_TOKEN, 
+                          webhook_url = APP_URL + BOT_TOKEN)
+    # updater.bot.setWebhook(APP_URL + BOT_TOKEN)
 
-    # Run the bot until you press Ctrl-C or shutdown the process
     updater.idle()
 
 if __name__ == '__main__':
