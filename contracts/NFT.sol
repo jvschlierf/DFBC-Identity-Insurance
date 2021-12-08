@@ -21,12 +21,15 @@ contract propNFT is ERC721, Ownable {
 		uint value;
 	}
 	
-	
 	//mapping PropertyID to owner
 	mapping (uint => address) public tokenToOwner;
+    mapping (ERC721 => address) public NFTtoOwner;
+
     
     constructor() ERC721("propNFT", "NFT") public {
-    owner = msg.sender; // ??
+    owner = msg.sender; // ?? 
+    colleteralizedAmount float; // cumulative sum or percentage 
+    totalAmout float; // house price 
     }
 
     function mintNFT(address memory recipient, string memory tokenURI) 
@@ -46,3 +49,6 @@ contract propNFT is ERC721, Ownable {
         return newItemId;
     }
 }
+    modifier verifyCollateralized {
+
+    }
