@@ -5,7 +5,7 @@ pragma solidity  ^0.8.0;
 contract  Registry {
 
     struct Property {
-        //uint id;
+        //uint id; id generated inside the function First Registration
         uint sqm;
         uint floor;
         uint zipCode;
@@ -20,7 +20,7 @@ contract  Registry {
     }
 
     struct Owner {
-        //uint id;
+        //uint id; id generated inside the function OwnerInformation
         string firstName;
         string lastName;
         string gender;  //We accomodate more than 2 genders, so do not use a bool here
@@ -29,9 +29,9 @@ contract  Registry {
         string docNumber;
          
     }
-	
-    mapping (address => Owner) owners;
-    mapping (Property => Owner) owned_properties;
+
+    mapping (address => uint) ownerPropertyCount; //in case owner has more than 1 property
+    mapping (uint => address) propertyToOwner;
 
     uint public propertycount;
     address private Validator;
@@ -62,9 +62,11 @@ contract  Registry {
     }
     //ownership is verified before construction is called
     function FirstRegistration(uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _adressAdditional, string memory _houseType) public ValidateSender { // Add property to 
-        properties.push(Property(_id, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _adressAdditional, _houseType));
+        properties.push(Property(_areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _adressAdditional, _houseType));
         uint id = properties.push(Property(_id, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _adressAdditional, _houseType)) - 1;
         emit NewPropertyRegistered(id, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressadditional, _houseType);
+        propertyToOwner[id] = msg.sender;   //using the mapping
+        ownerPropertyCount[msg.sender]++;   //using the mapping   
     }
 
 
