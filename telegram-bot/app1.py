@@ -1,7 +1,7 @@
 import telegram
 from telegram.ext import Updater, CommandHandler, CallbackContext
 import logging
-import redis
+# import redis
 import re
 from flask import Flask, request
 from credentials import BOT_TOKEN, REDIS_URI, BOT_USER_NAME, APP_URL
@@ -15,8 +15,8 @@ global TOKEN
 TOKEN = BOT_TOKEN
 bot = telegram.Bot(token=TOKEN)
 
-r = redis.from_url(REDIS_URI) # connection to the databse
-db_keys = r.keys(pattern='*')   # allows us to fetch data
+# r = redis.from_url(REDIS_URI) # connection to the databse
+# db_keys = r.keys(pattern='*')   # allows us to fetch data
 
 app = Flask(__name__)
 
@@ -47,17 +47,17 @@ def start():
        bot_welcome = "Hello! This is blockchain-based land registry"
        bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
 
-#    else:
-#        try:
-#            text = re.sub(r"\W", "_", text)
-#            # create the api link for the avatar based on http://avatars.adorable.io/
-#            url = "https://api.adorable.io/avatars/285/{}.png".format(text.strip())
-#            # reply with a photo to the name the user sent,
-#            # note that you can send photos by url and telegram will fetch it for you
-#            bot.sendPhoto(chat_id=chat_id, photo=url, reply_to_message_id=msg_id)
-#        except Exception:
-#            # if things went wrong
-#            bot.sendMessage(chat_id=chat_id, text="There was a problem in the name you used, please enter different name", reply_to_message_id=msg_id)
+   else:
+       try:
+           text = re.sub(r"\W", "_", text)
+           # create the api link for the avatar based on http://avatars.adorable.io/
+           url = "https://api.adorable.io/avatars/285/{}.png".format(text.strip())
+           # reply with a photo to the name the user sent,
+           # note that you can send photos by url and telegram will fetch it for you
+           bot.sendPhoto(chat_id=chat_id, photo=url, reply_to_message_id=msg_id)
+       except Exception:
+           # if things went wrong
+           bot.sendMessage(chat_id=chat_id, text="There was a problem in the name you used, please enter different name", reply_to_message_id=msg_id)
 
    return 'ok'
 

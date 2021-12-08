@@ -8,3 +8,5 @@ print((len(db_keys)))
 for single in db_keys:
     chat_id = r.get(single).decode("UTF-8")
     print(single.decode("UTF-8"), ": ", chat_id)
+
+    
