@@ -10,8 +10,10 @@ from telegram.ext import (
     ConversationHandler,
     CallbackContext,
 )
-from credentials import BOT_TOKEN, BOT_USER_NAME, APP_URL
+from credentials import BOT_TOKEN, APP_URL
 import os
+from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove
+from typing import Dict
 
 PORT = int(os.environ.get('PORT', 8443))
 
@@ -21,80 +23,147 @@ bot = telegram.Bot(token=BOT_TOKEN)
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
-
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
-def start(update, context):
-    """Send a message when the command /start is issued."""
+# def webhook(request):
+#     if request.method == "POST":
+#         update = telegram.Update.de_json(request.get_json(force=True), bot)
+#         chat_id = update.message.chat.id
+#         bot.sendMessage(chat_id=chat_id, text=update.message.text)
+#     return "ok"
+
+CHOOSING, TYPING_REPLY, TYPING_CHOICE = range(3)
+
+reply_keyboard = [
+    ['Ownership check', 'NFT', 'Buy/sell property'],
+    ['Bla bla', 'Something else...'],
+    ['Done'],
+]
+
+markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+
+def facts_to_str(user_data: Dict[str, str]) -> str:
+    """Helper function for formatting the gathered user info."""
+
+    facts = [f'{key} - {value}' for key, value in user_data.items()]
+    return "\n".join(facts).join(['\n', '\n'])
+
+
+def start(update: Update, context: CallbackContext) -> int:
+    """Start the conversation and ask user for input."""
+
     update.message.reply_text(
-        'Hello, my Name is Professor Oak! \n' 
-        'I can give you more information on Pokemon!'
+        'Hello! This is blockchain-based land registry',
+        reply_markup=markup,
     )
 
-def webhook(request):
-    if request.method == "POST":
-        update = telegram.Update.de_json(request.get_json(force=True), bot)
-        chat_id = update.message.chat.id
-        bot.sendMessage(chat_id=chat_id, text=update.message.text)
-    return "ok"
+    return CHOOSING
 
-# def pokedex(update, context): 
-#     """ Searches the Pokemon API for more information and return the data """
+# def start(update, context):
+#     """Send a message when the command /start is issued."""
+#     update.message.reply_text(
+#     )
 
-#     # Get the pokemon from the command and check if it's not empty
+def regular_choice(update: Update, context: CallbackContext) -> int:
+    """Ask the user for info about the selected predefined choice."""
+    text = update.message.text
+    context.user_data['choice'] = text
+    update.message.reply_text(f'Your {text.lower()}? Yes, I would love to hear about that!')
 
-#     pokemon_query = update.message.text.replace('/pokedex', '').replace(" ", "").lower()
+    return TYPING_REPLY
 
-#     if len(pokemon_query) == 0:
-#         update.message.reply_text(
-#             'Please add a pokemon name to your command \n'
-#             'Example: /pokedex Pikachu' 
-#         ) 
-#     else:
 
-#         # Call the API
-#         response = requests.get('https://pokeapi.co/api/v2/pokemon-species/' + pokemon_query +'/')
+def custom_choice(update: Update, context: CallbackContext) -> int:
+    """Ask the user for a description of a custom category."""
+    update.message.reply_text(
+        'Alright, please send me the category first, for example "Most impressive skill"'
+    )
 
-#         # Check if the data is found by the server
-#         if response.status_code == 404:
-#             update.message.reply_text(
-#                 "I could not find the pokemon: {pokemon_query}".format(pokemon_query=pokemon_query)
-#             )     
-#         else:
-#             # Get the data from the response
-#             pokemon_data = response.json()
+    return TYPING_CHOICE
 
-#             pokemon_id = pokemon_data['id']
-#             pokemon_name = pokemon_data['name'].capitalize()
-#             pokemon_desc = "NO DESCRIPTION FOUND"
-#             pokemon_image = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + str(pokemon_id) + ".png"
 
-#             for desc in pokemon_data['flavor_text_entries']: 
-#                 if desc['language']['name'] == 'en':
-#                     pokemon_desc = desc['flavor_text'].replace('\n', ' ')
+def received_information(update: Update, context: CallbackContext) -> int:
+    """Store info provided by user and ask for the next category."""
+    user_data = context.user_data
+    text = update.message.text
+    category = user_data['choice']
+    user_data[category] = text
+    del user_data['choice']
 
-#             # Send a message back to the user
-#             update.message.reply_text(
-#                 "[{pokemon_id}] {pokemon_name} \n\n{pokemon_desc}\n{pokemon_image}".format(
-#                     pokemon_id=pokemon_id, pokemon_name=pokemon_name, pokemon_desc=pokemon_desc, 
-#                     pokemon_image=pokemon_image
-#                 )
-#             ) 
+    update.message.reply_text(
+        "Neat! Just so you know, this is what you already told me:"
+        f"{facts_to_str(user_data)} You can tell me more, or change your opinion"
+        " on something.",
+        reply_markup=markup,
+    )
 
-def main():
-    updater = Updater(BOT_TOKEN, use_context=True)
-    dp = updater.dispatcher
+    return CHOOSING
 
-    # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("start", start))
-    # dp.add_handler(CommandHandler("pokedex", pokedex))
 
-    updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=BOT_TOKEN, 
-                          webhook_url = APP_URL + BOT_TOKEN)
-    # updater.bot.setWebhook(APP_URL + BOT_TOKEN)
+def done(update: Update, context: CallbackContext) -> int:
+    """Display the gathered info and end the conversation."""
+    user_data = context.user_data
+    if 'choice' in user_data:
+        del user_data['choice']
+
+    update.message.reply_text(
+        f"I learned these facts about you: {facts_to_str(user_data)}Until next time!",
+        reply_markup=ReplyKeyboardRemove(),
+    )
+
+    user_data.clear()
+    return ConversationHandler.END
+
+
+def main() -> None:
+    """Run the bot."""
+
+    updater = Updater(BOT_TOKEN)
+
+    dispatcher = updater.dispatcher
+
+    # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler('start', start)],
+        states={
+            CHOOSING: [
+                MessageHandler(
+                    Filters.regex('^(Age|Favourite colour|Number of siblings)$'), regular_choice
+                ),
+                MessageHandler(Filters.regex('^Something else...$'), custom_choice),
+            ],
+            TYPING_CHOICE: [
+                MessageHandler(
+                    Filters.text & ~(Filters.command | Filters.regex('^Done$')), regular_choice
+                )
+            ],
+            TYPING_REPLY: [
+                MessageHandler(
+                    Filters.text & ~(Filters.command | Filters.regex('^Done$')),
+                    received_information,
+                )
+            ],
+        },
+        fallbacks=[MessageHandler(Filters.regex('^Done$'), done)],
+    )
+
+    dispatcher.add_handler(conv_handler)
+
+# def main():
+#     updater = Updater(BOT_TOKEN, use_context=True)
+#     dp = updater.dispatcher
+
+#     # on different commands - answer in Telegram
+#     dp.add_handler(CommandHandler("start", start))
+#     dp.add_handler(CommandHandler("pokedex", pokedex))
+
+    # updater.start_webhook(listen='0.0.0.0',
+    #                       port=PORT,
+    #                       url_path=BOT_TOKEN, 
+    #                       webhook_url = APP_URL + BOT_TOKEN)
+    updater.start_polling()
 
     updater.idle()
 
