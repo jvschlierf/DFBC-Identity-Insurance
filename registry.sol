@@ -28,13 +28,25 @@ contract  Registry {
         string docNumber;
          
     }
+	
+	
 
 
     mapping (address => Owner) owners;
     mapping (Property => Owner) owned_properties;
 
     uint public propertycount;
-    address private Validator = msg.sender();
+    address private Validator;
+	
+    modifier ValidateSender {
+        require(msg.sender == Validator);
+        _;
+    }
+	
+	constructor() public {
+        Validator = msg.sender;
+    }
+	
 
     // Shaurya
     event PropertyRegistered {  
@@ -59,10 +71,7 @@ contract  Registry {
         properties.push(Property(_id, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _adressAdditional, _houseType));
     }
 
-    modifier ValidateSender {
-        require(msg.sender == Validator);
-        _;
-    }
+
 
     function Transfer () public ValidateSender { //Change in ownership - Shaurya 
 
