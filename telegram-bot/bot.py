@@ -13,7 +13,7 @@ from telegram.ext import (
 from credentials import BOT_TOKEN, BOT_USER_NAME, APP_URL
 import os
 
-PORT = int(os.environ.get('PORT', 5000))
+PORT = int(os.environ.get('PORT', 8443))
 
 global bot
 bot = telegram.Bot(token=BOT_TOKEN)
