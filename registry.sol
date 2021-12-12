@@ -61,10 +61,10 @@ contract  Registry {
         emit NewOwnerCreated(id, _firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber);
     }
     //ownership is verified before construction is called
-    function FirstRegistration(uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _adressAdditional, string memory _houseType) public ValidateSender { // Add property to 
-        properties.push(Property(_areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _adressAdditional, _houseType));
-        uint id = properties.push(Property(_id, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _adressAdditional, _houseType)) - 1;
-        emit NewPropertyRegistered(id, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressadditional, _houseType);
+    function FirstRegistration(uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _addressAdditional, string memory _houseType) public ValidateSender { // Add property to 
+        properties.push(Property(_areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType));
+        uint id = properties.push(Property(_id, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType)) - 1;
+        emit NewPropertyRegistered(id, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType);
         propertyToOwner[id] = msg.sender;   //using the mapping
         ownerPropertyCount[msg.sender]++;   //using the mapping   
     }
