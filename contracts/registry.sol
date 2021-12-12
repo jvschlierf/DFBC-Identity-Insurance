@@ -52,7 +52,7 @@ contract  Registry {
         string street,
         string streetnum,
         string addressAdditional,
-        string houseType;
+        string houseType,
         uint sqm,
         uint floor) verifiedUser(_owner) public { // Add property to 
 
