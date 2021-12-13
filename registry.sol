@@ -2,7 +2,12 @@
 
 pragma solidity  ^0.8.0;
 
-contract  Registry {
+import "./ownable.sol"; //this is a standard file from OpenZapplin used for transferring or used for validating 
+                        //also used as function modiers so that only an owner of a contract can call a function and make changes
+                        //need to integerate it with our land registry contract especially the Transfer function
+
+
+contract  Registry is Ownable { //registry contract inheriting from the ownable contract
 
     struct Property {
         //uint id; id generated inside the function First Registration
