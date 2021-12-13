@@ -78,20 +78,17 @@ contract  Registry {
     }
 
 
-    function Update () public {  //Change in one of the Property variables - Shaurya - maybe infeasible. Work around could be to simply add another property for the difference in floorspace (assumed to be positive), and treat as 2 separate properties
+    function Update () public {  //Change in one of the Property variables - Shaurya - maybe infeasible. Work around could be to simply add another property for the difference in floorspace (assumed to be positive), and treat as 2 separate properties, use existing bin address
+    // event to check that no NFT is open against the property
+    // burn NFT and reissue a new one
 
+    // transfer ownership to bin by changing mapping, then issue new property to the same owner, 
     }
 
-    function Notify () public { //Notify customer here or in python via telegram bot
-
-
-    }
-
-    function Remove () public { //Remove the property if property  - Jakob to do  - maybe impossible, consider removing
+    function Payment () public { 
 
 
     }
-
 
 
 }
