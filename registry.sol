@@ -71,14 +71,14 @@ contract  Registry {
 
 
 
-    function Transfer () public ValidateSender { //Change in ownership - Shaurya 
+    function Transfer () public ValidateSender { //Change in ownership - Shaurya - could be loaned from existing repos that we found?
 
     // ensure that no NFT is open against the property
 
     }
 
 
-    function Update () public {  //Change in one of the Property variables - Shaurya
+    function Update () public {  //Change in one of the Property variables - Shaurya - maybe infeasible. Work around could be to simply add another property for the difference in floorspace (assumed to be positive), and treat as 2 separate properties
 
     }
 
@@ -87,7 +87,7 @@ contract  Registry {
 
     }
 
-    function Remove () public { //Remove the property if property  - Jakob to do
+    function Remove () public { //Remove the property if property  - Jakob to do  - maybe impossible, consider removing
 
 
     }
