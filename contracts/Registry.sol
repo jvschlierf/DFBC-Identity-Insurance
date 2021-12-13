@@ -99,7 +99,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
         //the old address would still be pointing to the property which has been transferred
         //so we can fill it with a value which the property id -> 'counter' is unlikely to reach
         //we can do this for any address which has relinquished control of a property
-        address_to_owner(_msg.sender) = 2^256 - 1;
+        address_to_owner[_msg.sender] = 2**256 - 1;
         
     // ensure that no NFT is open against the property
 
