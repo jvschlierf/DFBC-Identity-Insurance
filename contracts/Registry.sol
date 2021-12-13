@@ -60,7 +60,8 @@ contract  Registry { //registry contract inheriting from the ownable contract
     // Creating events of new property and owner
     event NewPropertyRegistered (uint id, uint areaSqm, uint floor, uint zipCode, string country, string region, string city, string street, string streetNumber, string adressAdditional, string houseType);
     event NewOwnerCreated (address owner_address, string firstName, string lastName, string gender, string codiceFiscale, string docType, string docNumber);
-    
+    event OwnershipTransferred (address new_owner, uint propert_id);
+
     //declaring arrays of the two structs created above
     Property[] public properties; 
     Owner[] public owners;
@@ -70,7 +71,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
         //uint id = owners.push(Owner(_firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber)) - 1;
         
         emit NewOwnerCreated(counter_owners, _firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber);
-        address_to_owner[msg.sender] = counter_owner;
+        address_to_owner[msg.sender] = counter_owners;
         counter_owners ++;
     
     }
@@ -89,21 +90,28 @@ contract  Registry { //registry contract inheriting from the ownable contract
 
 
 
-    function Transfer (uint property_id, address new_owner_address) public payable{ //Change in ownership - Shaurya - could be loaned from existing repos that we found?
-        require(msg.sender == propertyToOwner[property_id]);
-        propertyToOwner[property_id] = new_owner_address;
-
+    function Transfer (uint _property_id, address _new_owner_address) public payable{ //Change in ownership - Shaurya - could be loaned from existing repos that we found?
+        require(msg.sender == propertyToOwner[_property_id]);  //First we check if the person tranferring the property actually owns it or not
+        propertyToOwner[_property_id] = _new_owner_address;
+        ownerPropertyCount[_new_owner_address]++; // incresing new owner's property count
+        ownerPropertyCount[msg.sender]--; // decreasing old owner's property count
+        emit OwnershipTransferred (_new_owner_adress, _propert_id);
+        //the old address would still be pointing to the property which has been transferred
+        //so we can fill it with a value which the property id -> 'counter' is unlikely to reach
+        //we can do this for any address which has relinquished control of a property
+        address_to_owner(_msg.sender) = 2^256 - 1;
+        
     // ensure that no NFT is open against the property
 
     }
 
-    function check_owner (uint property_id) public view returns(address){
-        return (propertyToOwner[property_id]);
+    function check_owner (uint _property_id) public view returns(address){
+        return (propertyToOwner[_property_id]);
     }
 
 
-    function Update (uint id, uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _addressAdditional, string memory _houseType) public {  //Change in one of the Property variables - Shaurya - maybe infeasible. Work around could be to simply add another property for the difference in floorspace (assumed to be positive), and treat as 2 separate properties
-        Property storage prop = properties[id];
+    function Update (uint _id, uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _addressAdditional, string memory _houseType) public {  //Change in one of the Property variables - Shaurya - maybe infeasible. Work around could be to simply add another property for the difference in floorspace (assumed to be positive), and treat as 2 separate properties
+        Property storage prop = properties[_id];
         prop.sqm = _areaSqm;
         prop.floor = _floor;
         prop.zipCode = _zipCode;
