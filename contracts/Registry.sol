@@ -109,7 +109,6 @@ contract  Registry { //registry contract inheriting from the ownable contract
         return (propertyToOwner[_property_id]);
     }
 
-
     function Update (uint _id, uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _addressAdditional, string memory _houseType) public {  //Change in one of the Property variables - Shaurya - maybe infeasible. Work around could be to simply add another property for the difference in floorspace (assumed to be positive), and treat as 2 separate properties
         Property storage prop = properties[_id];
         prop.sqm = _areaSqm;
