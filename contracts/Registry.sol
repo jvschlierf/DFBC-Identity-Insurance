@@ -36,11 +36,10 @@ contract  Registry { //registry contract inheriting from the ownable contract
          
     }
     
-    mapping (address => uint) address_to_owner;
-    mapping (address => uint) ownerPropertyCount; //in case owner has more than 1 property
-    mapping (uint => address) propertyToOwner;
-    mapping (address => bool) public Owners_Check;
-    mapping (address => uint) customerBalance;
+    mapping (address => uint) private address_to_owner;
+    mapping (address => uint) private ownerPropertyCount; //in case owner has more than 1 property
+    mapping (uint => address) private propertyToOwner;
+    mapping (address => uint) private customerBalance;
 
     uint public propertycount;
     uint private revenue; // our revenue that can be withdrawn as services have been performed
@@ -56,46 +55,47 @@ contract  Registry { //registry contract inheriting from the ownable contract
     }
 
     uint counter_owners = 1; // 0 means owner is not registered
-    uint counter = 0;
+    uint counter_properties = 1;
+    uint registration_price = 10000000000000000; //at current market value ~$37 
+    uint subscription_price = 1000000000000000; //at current market value ~$3.7 
 	
     //keccak256(abi.encodePacked(_str)) -> this creates a unique hash based on arguments passed, might be required if we want a unique identifier for a property/owner
 
     // Creating events of new property and owner
     event NewPropertyRegistered (uint id, uint areaSqm, uint floor, uint zipCode, string country, string region, string city, string street, string streetNumber, string adressAdditional, string houseType);
-    event NewOwnerCreated (address owner_address, string firstName, string lastName, string gender, string codiceFiscale, string docType, string docNumber);
+    event NewOwnerCreated (address owner_address, uint id,  string firstName, string lastName, string gender, string codiceFiscale, string docType, string docNumber);
     event OwnershipTransferred (address new_owner, uint propert_id);
 
     //declaring arrays of the two structs created above
     Property[] public properties; 
     Owner[] public owners;
 
-    function OwnerInformation(string memory _firstName, string memory _lastName, string memory _gender, string memory _codiceFiscale, string memory _docType, string memory _docNumber) public payable {
-        require (address_to_owner[msg.sender] != 0); // checking if owner is already registered or not
+    function registerOwner(string memory _firstName, string memory _lastName, string memory _gender, string memory _codiceFiscale, string memory _docType, string memory _docNumber) public payable {
+        require (address_to_owner[msg.sender] == 0, "Address is already registered."); // checking if owner is already registered or not
         owners.push(Owner(counter_owners,_firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber));
-        //uint id = owners.push(Owner(_firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber)) - 1;
         
-        emit NewOwnerCreated(counter_owners, _firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber);
+        emit NewOwnerCreated(msg.sender, counter_owners, _firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber);
         address_to_owner[msg.sender] = counter_owners;
         counter_owners ++;
-        Owners_Check[msg.sender] = true;
         customerBalance[msg.sender] = 0;
     
     }
     //ownership is verified before construction is called
-    function FirstRegistration(uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _addressAdditional, string memory _houseType) public payable  { // Add property to 
-        require(customerBalance[msg.sender] >= 100, "Balance too low to register property. Please increase your balance & try again."); // we need to define the prices for registration & checking
-        properties.push(Property(counter,_areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType));
-        //uint id = properties.push(Property(_areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType)) - 1;
-        emit NewPropertyRegistered(counter, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType);
-        propertyToOwner[counter] = msg.sender;   //using the mapping
-        ownerPropertyCount[msg.sender]++;   //using the mapping   
-        counter ++;
-        customerBalance[msg.sender] -= 75; // after successful listing, deduct the fee from customers account balance
-        revenue += 75;
+    function registerProperty(address _Owner, uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _addressAdditional, string memory _houseType) ValidateSender public payable  { // Add property to 
+        require(customerBalance[_Owner] >= registration_price, "Balance too low to register property. Please increase your balance & try again."); // we need to define the prices for registration & checking
+        properties.push(Property(counter_properties,_areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType));
+        // Check for Customer Properties on 
+        emit NewPropertyRegistered(counter_properties, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType);
+        propertyToOwner[counter_properties] = _Owner;   //using the mapping
+        ownerPropertyCount[_Owner]++;   //using the mapping   
+        counter_properties ++;
+
+        customerBalance[_Owner] -= registration_price; // after successful listing, deduct the fee from customers account balance
+
     }
 
     receive () external payable {
-        require(Owners_Check[msg.sender], "Please sign up first.");
+        require (address_to_owner[msg.sender] != 0, "Please sign up first.");
         customerBalance[msg.sender] += msg.value; // increase the owners balance
     }
 
@@ -116,12 +116,10 @@ contract  Registry { //registry contract inheriting from the ownable contract
 
     }
 
-    function check_owner (uint _property_id) public view returns(address){
-        require(customerBalance[msg.sender] >= 50, "Balance too low to execute the check. Please increase your balance & try again.");
-        return (propertyToOwner[_property_id]);
-        customerBalance[msg.sender] -= 50;
-        revenue += 50;
-    }
+    // function check_owner (uint _property_id) public view returns(address){
+    //     return (propertyToOwner[_property_id]);
+
+    // }
 
     function Update (uint _id, uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _addressAdditional, string memory _houseType) public {  //Change in one of the Property variables - Shaurya - maybe infeasible. Work around could be to simply add another property for the difference in floorspace (assumed to be positive), and treat as 2 separate properties
         Property storage prop = properties[_id];
@@ -137,13 +135,25 @@ contract  Registry { //registry contract inheriting from the ownable contract
         prop.houseType = _houseType;
     }
 
+    function changePrices(uint _new_price_registration, uint _new_price_subscription) public ValidateSender {
+        registration_price = _new_price_registration;
+        subscription_price = _new_price_subscription;
+
+    }
+
+
+    function subscription_payments () public { //Jakob to create later
+
+
+    }
+
 
     function Payment () ValidateSender public payable { 
         address payable deposit = payable(Validator);
         deposit.transfer(revenue); // we pay out the generated revenues
     }
 
-
+    // Add subscription fee, transfer price 
 
 }
 
