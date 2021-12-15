@@ -52,7 +52,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
         Validator = msg.sender;
     }
 
-    uint counter_owners = 0;
+    uint counter_owners = 1; // 0 means owner is not registered
     uint counter = 0;
 	
     //keccak256(abi.encodePacked(_str)) -> this creates a unique hash based on arguments passed, might be required if we want a unique identifier for a property/owner
@@ -67,6 +67,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
     Owner[] public owners;
 
     function OwnerInformation(string memory _firstName, string memory _lastName, string memory _gender, string memory _codiceFiscale, string memory _docType, string memory _docNumber) public payable {
+        require (address_to_owner[msg.sender] !== 0); // checking if owner is already registered or not
         owners.push(Owner(counter_owners,_firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber));
         //uint id = owners.push(Owner(_firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber)) - 1;
         
