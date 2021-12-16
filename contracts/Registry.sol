@@ -1,4 +1,5 @@
 //Main Land Registry Contract
+//SPDX-License-Identifier: UNLICENSED
 
 pragma solidity  ^0.8.0;
 
@@ -58,6 +59,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
     uint counter_properties = 1;
     uint registration_price = 10000000000000000; //at current market value ~$37 
     uint subscription_price = 1000000000000000; //at current market value ~$3.7 
+    uint transfer_price = 10000000000000000; //at current market value ~$37
 	
     //keccak256(abi.encodePacked(_str)) -> this creates a unique hash based on arguments passed, might be required if we want a unique identifier for a property/owner
 
@@ -67,13 +69,14 @@ contract  Registry { //registry contract inheriting from the ownable contract
     event OwnershipTransferred (address new_owner, uint propert_id);
 
     //declaring arrays of the two structs created above
-    Property[] public properties; 
+    Property[] public properties; // Do we use these at all?
     Owner[] public owners;
+    address[] public listofaddresses;
 
     function registerOwner(string memory _firstName, string memory _lastName, string memory _gender, string memory _codiceFiscale, string memory _docType, string memory _docNumber) public payable {
         require (address_to_owner[msg.sender] == 0, "Address is already registered."); // checking if owner is already registered or not
         owners.push(Owner(counter_owners,_firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber));
-        
+        listofaddresses.push(msg.sender);
         emit NewOwnerCreated(msg.sender, counter_owners, _firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber);
         address_to_owner[msg.sender] = counter_owners;
         counter_owners ++;
@@ -82,7 +85,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
     }
     //ownership is verified before construction is called
     function registerProperty(address _Owner, uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _addressAdditional, string memory _houseType) ValidateSender public payable  { // Add property to 
-        require(customerBalance[_Owner] >= registration_price, "Balance too low to register property. Please increase your balance & try again."); // we need to define the prices for registration & checking
+        require(customerBalance[_Owner] >= registration_price, "Balance too low to register property. Please increase your balance & try again.");
         properties.push(Property(counter_properties,_areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType));
         // Check for Customer Properties on 
         emit NewPropertyRegistered(counter_properties, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType);
@@ -91,7 +94,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
         counter_properties ++;
 
         customerBalance[_Owner] -= registration_price; // after successful listing, deduct the fee from customers account balance
-
+        revenue += registration_price;
     }
 
     receive () external payable {
@@ -101,8 +104,9 @@ contract  Registry { //registry contract inheriting from the ownable contract
 
 
 
-    function Transfer (uint _property_id, address _new_owner_address) public payable{ //Change in ownership - Shaurya - could be loaned from existing repos that we found?
-        require(msg.sender == propertyToOwner[_property_id]);  //First we check if the person transferring the property actually owns it or not
+    function Transfer (uint _property_id, address _new_owner_address) public payable{ //Change in ownership  - DO WE NEED A VALIDATION IN HERE?
+        require(msg.sender == propertyToOwner[_property_id], "Only Owners can transfer property. We do not have you as owner of this property.");  //First we check if the person transferring the property actually owns it or not
+        require(customerBalance[msg.sender] >= transfer_price, "Balance too low to transfer property. Please increase your balance & try again.");
         propertyToOwner[_property_id] = _new_owner_address;
         ownerPropertyCount[_new_owner_address]++; // incresing new owner's property count
         ownerPropertyCount[msg.sender]--; // decreasing old owner's property count
@@ -111,6 +115,8 @@ contract  Registry { //registry contract inheriting from the ownable contract
         //so we can fill it with a value which the property id -> 'counter' is unlikely to reach
         //we can do this for any address which has relinquished control of a property
         address_to_owner[msg.sender] = 2**256 - 1;
+        customerBalance[msg.sender] -= transfer_price; // after successful transfer, deduct the fee from customers account balance
+        revenue += transfer_price;
         
     // ensure that no NFT is open against the property
 
@@ -135,25 +141,38 @@ contract  Registry { //registry contract inheriting from the ownable contract
         prop.houseType = _houseType;
     }
 
-    function changePrices(uint _new_price_registration, uint _new_price_subscription) public ValidateSender {
+    function changePrices(uint _new_price_registration, uint _new_price_subscription, uint _new_price_transfers) public ValidateSender {
         registration_price = _new_price_registration;
         subscription_price = _new_price_subscription;
+        transfer_price = _new_price_transfers;
 
     }
 
 
-    function subscription_payments () public { //Jakob to create later
-
+    function subscription_payments () public ValidateSender { //Function to call once monthly to receive subscription payments
+        for (uint i=0; i< listofaddresses.length; i++) {
+            customerBalance[listofaddresses[i]] -= subscription_price;
+            revenue += subscription_price;
+        }
 
     }
+
+    function show_revenue () external ValidateSender returns (uint _revenue) { //Function to show realized revenue from sign up & subscription
+        _revenue = revenue;
+        return _revenue;
+    }
+
 
 
     function Payment () ValidateSender public payable { 
         address payable deposit = payable(Validator);
-        deposit.transfer(revenue); // we pay out the generated revenues
+        if (address(this).balance < 100000000000000000) {
+            revenue -= 1000000000000000; // to prevent running out of money (for gas) in the contract, we save 0.001 ether if our balance is below 1 ether
+        }
+        deposit.transfer(revenue); // we pay out the generated revenues to our address
     }
 
-    // Add subscription fee, transfer price 
+    
 
 }
 
