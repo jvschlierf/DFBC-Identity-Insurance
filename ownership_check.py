@@ -31,8 +31,8 @@ def check_ownership(URL,contract,abi): # all inputs are strings
     #check
     notify_list = [] 
     for prop in properties:
-        owner_address = prop_to_owner[prop.id]
-        owner_name = owners[address_to_owner[owner_address]]
+        owner_address = prop_to_owner[prop.id-1]
+        owner_name = owners[address_to_owner[owner_address]-1]
         prop_address = prop.street + ' ' + prop.streetnum
         p = registry.loc[registry.indirizzo == prop_address]
         if p.Owner.values != owner_name:
