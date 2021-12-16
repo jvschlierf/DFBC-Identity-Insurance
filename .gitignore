@@ -23,7 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 node_modules
-*.env
+.env
 coverage
 coverage.json
 typechain
@@ -33,4 +33,5 @@ typechain
 cache
 artifacts
 
+# telegram credentials
 telegram-bot/credentials.py
