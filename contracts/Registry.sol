@@ -166,8 +166,8 @@ contract  Registry { //registry contract inheriting from the ownable contract
 
     function Payment () ValidateSender public payable { 
         address payable deposit = payable(Validator);
-        if (address(this).balance < 100000000000000000) {
-            revenue -= 1000000000000000; // to prevent running out of money (for gas) in the contract, we save 0.001 ether if our balance is below 1 ether
+        if (address(this).balance < 1000000000000000) {  // == 0.01 ETH
+            revenue -= 100000000000000; // to prevent running out of money (for gas) in the contract, we save 0.0001 ETH if our balance is below 0.01 ether
         }
         deposit.transfer(revenue); // we pay out the generated revenues to our address
     }
