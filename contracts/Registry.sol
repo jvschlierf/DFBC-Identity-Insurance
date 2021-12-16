@@ -38,7 +38,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
         string docNumber;
     }
 
-    mapping (address => uint) private address_to_owner;
+    mapping (address => uint) public address_to_owner;
     mapping (address => uint) private ownerPropertyCount; //in case owner has more than 1 property
     mapping (uint => address) private propertyToOwner;
     mapping (address => uint) public customerBalance;
@@ -109,13 +109,13 @@ contract  Registry { //registry contract inheriting from the ownable contract
         propertyToOwner[property_id] = _Owner;   //using the mapping
         ownerPropertyCount[_Owner]++;   //using the mapping   
         property_id ++;
-        customerBalance[_Owner] - registration_price; // after successful listing, deduct the fee from customers account balance
-        revenue + registration_price;
+        customerBalance[_Owner] -= registration_price; // after successful listing, deduct the fee from customers account balance
+        revenue += registration_price;
     }
 
 
     receive () external payable isRegistered {
-        customerBalance[msg.sender] + msg.value; // increase the owners balance
+        customerBalance[msg.sender] += msg.value; // increase the owners balance
     }
 
 
@@ -131,8 +131,8 @@ contract  Registry { //registry contract inheriting from the ownable contract
         //so we can fill it with a value which the property id -> 'counter' is unlikely to reach
         //we can do this for any address which has relinquished control of a property
         // address_to_owner[msg.sender] = 2**256 - 1; // we do not need it since the customer's still in db
-        customerBalance[_new_owner_address] - transfer_price; // after successful transfer, deduct the fee from customers account balance
-        revenue + transfer_price;
+        customerBalance[_new_owner_address] -= transfer_price; // after successful transfer, deduct the fee from customers account balance
+        revenue += transfer_price;
         
     // ensure that no NFT is open against the property
 

@@ -17,7 +17,7 @@ contract Subscription is Registry {
 
     event OwnerSubscribed(address owner_address);
     event OwnerUnubscribed(address owner_address);
-    event lowBalance(address owner_address);
+    event lowBalance(string first_name, string last_name);
     
     function subscribe () public isRegistered {
         subscribers[msg.sender] = true;
@@ -35,12 +35,13 @@ contract Subscription is Registry {
                 if(customerBalance[addresses_list[i]] < subscription_price) {  
                     subscribers[addresses_list[i]] = false;
                 } else if(customerBalance[addresses_list[i]] < subscription_price * 2){
-                    emit lowBalance(addresses_list[i]);
-                    customerBalance[addresses_list[i]] - subscription_price;
-                    revenue + subscription_price;
+                    uint owner_id = address_to_owner[addresses_list[i]]-1;
+                    emit lowBalance(owners[owner_id].firstName,owners[owner_id].lastName);
+                    customerBalance[addresses_list[i]] -= subscription_price;
+                    revenue += subscription_price;
                 } else {
-                    customerBalance[addresses_list[i]] - subscription_price;
-                    revenue + subscription_price;
+                    customerBalance[addresses_list[i]] -= subscription_price;
+                    revenue += subscription_price;
                 }
         }
         }
