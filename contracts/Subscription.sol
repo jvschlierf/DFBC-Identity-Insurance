@@ -7,9 +7,10 @@ pragma solidity  ^0.8.0;
                         //also used as function modiers so that only an owner of a contract can call a function and make changes
                         //need to integerate it with our land registry contract especially the Transfer function
 
+import "./Registry.sol";
 contract Subscription is Registry { 
 
-    address [] public subscribersList;
+    //address [] public subscribersList;
     mapping (address => bool) subscribers;
 
     uint subscription_price = 10; //at current market value ~$3.7 
@@ -20,8 +21,7 @@ contract Subscription is Registry {
     
     function subscribe () public isRegistered {
         subscribers[msg.sender] = true;
-        subscribersList.push(msg.sender);
-         emit OwnerSubscribed(msg.sender);
+        emit OwnerSubscribed(msg.sender);
     }
 
     function unsubscribe () public isRegistered {
@@ -30,17 +30,17 @@ contract Subscription is Registry {
     }   
 
     function subscription_payments () public validateSender { //Function to call once monthly to receive subscription payments
-        for (uint i=0; i< subscribersList.length; i++) {
-            if(subscribers[i] == true) {
-                if(customerBalance[listofaddresses[i]] < subscription_price) {  
-                    subscribers[i] = false
-                } else if(customerBalance[listofaddresses[i]] < subscription_price * 2){
-                    emit lowBalance(i);
-                    customerBalance[listofaddresses[i]].sub(subscription_price);
-                    revenue.add(subscription_price);
+        for (uint i=0; i< addresses_list.length; i++) {
+            if(subscribers[addresses_list[i]] == true) {
+                if(customerBalance[addresses_list[i]] < subscription_price) {  
+                    subscribers[addresses_list[i]] = false;
+                } else if(customerBalance[addresses_list[i]] < subscription_price * 2){
+                    emit lowBalance(addresses_list[i]);
+                    customerBalance[addresses_list[i]] - subscription_price;
+                    revenue + subscription_price;
                 } else {
-                    customerBalance[listofaddresses[i]].sub(subscription_price);
-                    revenue.add(subscription_price);
+                    customerBalance[addresses_list[i]] - subscription_price;
+                    revenue + subscription_price;
                 }
         }
         }
