@@ -46,12 +46,12 @@ contract  Registry { //registry contract inheriting from the ownable contract
     uint private revenue; // our revenue that can be withdrawn as services have been performed
     address private Validator;
 	
-    modifier ValidateSender {
+    modifier validateSender {
         require(msg.sender == Validator);
         _;
     }
 	
-	constructor() public payable{
+	constructor() payable {
         Validator = msg.sender;
     }
 
@@ -64,8 +64,11 @@ contract  Registry { //registry contract inheriting from the ownable contract
     //keccak256(abi.encodePacked(_str)) -> this creates a unique hash based on arguments passed, might be required if we want a unique identifier for a property/owner
 
     // Creating events of new property and owner
-    event NewPropertyRegistered (uint id, uint areaSqm, uint floor, uint zipCode, string country, string region, string city, string street, string streetNumber, string adressAdditional, string houseType);
-    event NewOwnerCreated (address owner_address, uint id,  string firstName, string lastName, string gender, string codiceFiscale, string docType, string docNumber);
+    event NewPropertyRegistered (uint id, uint areaSqm, uint floor, uint zipCode, string country, 
+                                string region, string city, string street, string streetNumber, 
+                                string adressAdditional, string houseType);
+    event NewOwnerCreated (address owner_address, uint id,  string firstName, string lastName, 
+                            string gender, string codiceFiscale, string docType, string docNumber);
     event OwnershipTransferred (address new_owner, uint propert_id);
 
     //declaring arrays of the two structs created above
@@ -73,22 +76,31 @@ contract  Registry { //registry contract inheriting from the ownable contract
     Owner[] public owners;
     address[] public listofaddresses;
 
-    function registerOwner(string memory _firstName, string memory _lastName, string memory _gender, string memory _codiceFiscale, string memory _docType, string memory _docNumber) public payable {
+    function registerOwner(string memory _firstName, string memory _lastName, 
+                            string memory _gender, string memory _codiceFiscale, 
+                                string memory _docType, string memory _docNumber) public payable {
         require (address_to_owner[msg.sender] == 0, "Address is already registered."); // checking if owner is already registered or not
-        owners.push(Owner(counter_owners,_firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber));
+        owners.push(Owner(counter_owners,_firstName, _lastName, _gender, 
+                            _codiceFiscale, _docType, _docNumber));
         listofaddresses.push(msg.sender);
-        emit NewOwnerCreated(msg.sender, counter_owners, _firstName, _lastName, _gender, _codiceFiscale, _docType, _docNumber);
+        emit NewOwnerCreated(msg.sender, counter_owners, _firstName, _lastName, _gender, 
+                                _codiceFiscale, _docType, _docNumber);
         address_to_owner[msg.sender] = counter_owners;
         counter_owners ++;
         customerBalance[msg.sender] = 0;
-    
     }
+
     //ownership is verified before construction is called
-    function registerProperty(address _Owner, uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _addressAdditional, string memory _houseType) ValidateSender public payable  { // Add property to 
+    function registerProperty(address _Owner, uint _areaSqm, uint _floor, uint _zipCode, 
+                                string memory _country, string memory _region, string memory _city, 
+                                string memory _street, string memory _streetNumber, string memory _addressAdditional, 
+                                string memory _houseType) validateSender public payable  { // Add property to 
         require(customerBalance[_Owner] >= registration_price, "Balance too low to register property. Please increase your balance & try again.");
-        properties.push(Property(counter_properties,_areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType));
+        properties.push(Property(counter_properties,_areaSqm, _floor, _zipCode, _country, _region, _city, 
+                                _street, _streetNumber, _addressAdditional, _houseType));
         // Check for Customer Properties on 
-        emit NewPropertyRegistered(counter_properties, _areaSqm, _floor, _zipCode, _country, _region, _city, _street, _streetNumber, _addressAdditional, _houseType);
+        emit NewPropertyRegistered(counter_properties, _areaSqm, _floor, _zipCode, _country, _region, _city, 
+                                    _street, _streetNumber, _addressAdditional, _houseType);
         propertyToOwner[counter_properties] = _Owner;   //using the mapping
         ownerPropertyCount[_Owner]++;   //using the mapping   
         counter_properties ++;
@@ -103,8 +115,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
     }
 
 
-
-    function Transfer (uint _property_id, address _new_owner_address) public payable{ //Change in ownership  - DO WE NEED A VALIDATION IN HERE?
+    function Transfer (uint _property_id, address _new_owner_address) public payable { //Change in ownership  - DO WE NEED A VALIDATION IN HERE?
         require(msg.sender == propertyToOwner[_property_id], "Only Owners can transfer property. We do not have you as owner of this property.");  //First we check if the person transferring the property actually owns it or not
         require(customerBalance[msg.sender] >= transfer_price, "Balance too low to transfer property. Please increase your balance & try again.");
         propertyToOwner[_property_id] = _new_owner_address;
@@ -127,7 +138,10 @@ contract  Registry { //registry contract inheriting from the ownable contract
 
     // }
 
-    function Update (uint _id, uint _areaSqm, uint _floor, uint _zipCode, string memory _country, string memory _region, string memory _city, string memory _street, string memory _streetNumber, string memory _addressAdditional, string memory _houseType) public {  //Change in one of the Property variables - Shaurya - maybe infeasible. Work around could be to simply add another property for the difference in floorspace (assumed to be positive), and treat as 2 separate properties
+    function Update (uint _id, uint _areaSqm, uint _floor, uint _zipCode, string memory _country, 
+                        string memory _region, string memory _city, string memory _street, 
+                        string memory _streetNumber, string memory _addressAdditional, 
+                        string memory _houseType) public {  //Change in one of the Property variables - Shaurya - maybe infeasible. Work around could be to simply add another property for the difference in floorspace (assumed to be positive), and treat as 2 separate properties
         Property storage prop = properties[_id];
         prop.sqm = _areaSqm;
         prop.floor = _floor;
@@ -141,7 +155,8 @@ contract  Registry { //registry contract inheriting from the ownable contract
         prop.houseType = _houseType;
     }
 
-    function changePrices(uint _new_price_registration, uint _new_price_subscription, uint _new_price_transfers) public ValidateSender {
+    function changePrices(uint _new_price_registration, uint _new_price_subscription, 
+                            uint _new_price_transfers) public validateSender {
         registration_price = _new_price_registration;
         subscription_price = _new_price_subscription;
         transfer_price = _new_price_transfers;
@@ -149,7 +164,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
     }
 
 
-    function subscription_payments () public ValidateSender { //Function to call once monthly to receive subscription payments
+    function subscription_payments () public validateSender { //Function to call once monthly to receive subscription payments
         for (uint i=0; i< listofaddresses.length; i++) {
             customerBalance[listofaddresses[i]] -= subscription_price;
             revenue += subscription_price;
@@ -157,14 +172,14 @@ contract  Registry { //registry contract inheriting from the ownable contract
 
     }
 
-    function show_revenue () external ValidateSender returns (uint _revenue) { //Function to show realized revenue from sign up & subscription
+    function show_revenue () external validateSender returns (uint _revenue) { //Function to show realized revenue from sign up & subscription
         _revenue = revenue;
         return _revenue;
     }
 
 
 
-    function Payment () ValidateSender public payable { 
+    function Payment () validateSender public payable { 
         address payable deposit = payable(Validator);
         if (address(this).balance < 1000000000000000) {  // == 0.01 ETH
             revenue -= 100000000000000; // to prevent running out of money (for gas) in the contract, we save 0.0001 ETH if our balance is below 0.01 ether
