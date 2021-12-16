@@ -7,7 +7,8 @@ pragma solidity  ^0.8.0;
                         //also used as function modiers so that only an owner of a contract can call a function and make changes
                         //need to integerate it with our land registry contract especially the Transfer function
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
+//import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
+//In Solidity 0.8+ you don't need to use SafeMath anymore, because the integer underflow/overflow check is performed on a lower level.
 
 contract  Registry { //registry contract inheriting from the ownable contract
 
@@ -40,7 +41,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
     mapping (address => uint) private address_to_owner;
     mapping (address => uint) private ownerPropertyCount; //in case owner has more than 1 property
     mapping (uint => address) private propertyToOwner;
-    mapping (address => uint) private customerBalance;
+    mapping (address => uint) public customerBalance;
 	
     modifier validateSender {
         require(msg.sender == Validator, "Permission denied");
@@ -52,17 +53,18 @@ contract  Registry { //registry contract inheriting from the ownable contract
         _;
     }
 
-	constructor() payable {
+	constructor()  payable {
         Validator = msg.sender;
     }
 
-    using SafeMath for uint;
+    //using SafeMath for uint;
+
 
     uint owner_id = 1; // 0 means owner is not registered
     uint property_id = 1;
     uint registration_price = 20; //at current market value ~$37 
     uint transfer_price = 5; //at current market value ~$37
-	uint private revenue; // our revenue that can be withdrawn as services have been performed
+	uint public revenue; // our revenue that can be withdrawn as services have been performed
     address private Validator;
     //keccak256(abi.encodePacked(_str)) -> this creates a unique hash based on arguments passed, might be required if we want a unique identifier for a property/owner
     
@@ -77,6 +79,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
     //declaring arrays of the two structs created above
     Property[] public properties; // Do we use these at all?
     Owner[] public owners;
+    address[] public addresses_list;
 
     function registerOwner(string memory _firstName, string memory _lastName, 
                             string memory _gender, string memory _codiceFiscale, 
@@ -84,6 +87,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
         require (address_to_owner[msg.sender] == 0, "Address is already registered."); // checking if owner is already registered or not
         owners.push(Owner(owner_id,_firstName, _lastName, _gender, 
                             _codiceFiscale, _docType, _docNumber));
+        addresses_list.push(msg.sender);
         emit NewOwnerCreated(msg.sender, owner_id, _firstName, _lastName, _gender, 
                                 _codiceFiscale, _docType, _docNumber);
         address_to_owner[msg.sender] = owner_id;
@@ -105,13 +109,13 @@ contract  Registry { //registry contract inheriting from the ownable contract
         propertyToOwner[property_id] = _Owner;   //using the mapping
         ownerPropertyCount[_Owner]++;   //using the mapping   
         property_id ++;
-        customerBalance[_Owner].sub(registration_price); // after successful listing, deduct the fee from customers account balance
-        revenue.add(registration_price);
+        customerBalance[_Owner] - registration_price; // after successful listing, deduct the fee from customers account balance
+        revenue + registration_price;
     }
 
 
     receive () external payable isRegistered {
-        customerBalance[msg.sender].add(msg.value); // increase the owners balance
+        customerBalance[msg.sender] + msg.value; // increase the owners balance
     }
 
 
@@ -127,8 +131,8 @@ contract  Registry { //registry contract inheriting from the ownable contract
         //so we can fill it with a value which the property id -> 'counter' is unlikely to reach
         //we can do this for any address which has relinquished control of a property
         // address_to_owner[msg.sender] = 2**256 - 1; // we do not need it since the customer's still in db
-        customerBalance[_new_owner_address].sub(transfer_price); // after successful transfer, deduct the fee from customers account balance
-        revenue.add(transfer_price);
+        customerBalance[_new_owner_address] - transfer_price; // after successful transfer, deduct the fee from customers account balance
+        revenue + transfer_price;
         
     // ensure that no NFT is open against the property
 
