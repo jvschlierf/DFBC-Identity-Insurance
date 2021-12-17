@@ -12,11 +12,12 @@ contract Subscription is Registry {
 
     address [] public subscribersList;
     mapping (address => bool) subscribers;
+    mapping (address => bool) eversubscribed;
     mapping (address => int) subscribersID;
-    uint subscribersCounter;
+
 
     constructor() {
-        subscribersCounter = 0;
+   
     } 
 
     uint subscription_price = 10; //at current market value ~$3.7 
@@ -26,19 +27,19 @@ contract Subscription is Registry {
     event lowBalance(string first_name, string last_name);
     
     function subscribe() public isRegistered {
-        uint256 subscriberID = subscribersID[msg.sender];
-        if (subscribersList[subscriberID].exists == false) {
-            subscribersID[msg.sender] = subscribersCounter;
-            subscribersCounter++;
-            subscribersList.push(msg.sender);
+        if (eversubscribed[msg.sender]) {
+            subscribers[msg.sender] = true;
+            emit OwnerSubscribed(msg.sender);
         }
-        subscribers[msg.sender] = true;
-        emit OwnerSubscribed(msg.sender);
+        else {
+            subscribers[msg.sender] = true;
+            emit OwnerSubscribed(msg.sender);
+            subscribersList.push(msg.sender);
+            eversubscribed[msg.sender] = true;
+        }
+        
     }
 
-
-// a = [Bea, Leo, Jakob]
-// a[2] = Jacob 
 
     function unsubscribe() public isRegistered {
         subscribers[msg.sender] = false;
