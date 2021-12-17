@@ -39,7 +39,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
     }
 
     mapping (address => uint) public address_to_owner;
-    mapping (address => uint) private ownerPropertyCount; //in case owner has more than 1 property
+    mapping (address => uint) public ownerPropertyCount; //in case owner has more than 1 property
     mapping (uint => address) private propertyToOwner;
     mapping (address => uint) public customerBalance;
 	
