@@ -6,6 +6,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./Registry.sol"; //so that to inherit the property struct to use for the metadata of the coin
 
 
 contract propNFT is ERC721, Ownable {
@@ -24,7 +25,8 @@ contract propNFT is ERC721, Ownable {
     mapping (uint256 => bool) private tokenColleteralizaion;
     mapping (uint256 => uint256) private tokenPrice;
     mapping(uint256 => string) private tokenURIs;
-    //  mapping (uint256 => Property ) private
+    mapping (uint256 => Property ) private;
+    
     event TokenIssued (address owner, uint tokenId);
     event TokenCollateralized (uint tokenId, uint amount);
     event TokenPriceSet (uint tokenId, uint amount);
@@ -42,6 +44,8 @@ contract propNFT is ERC721, Ownable {
         tokenColleteralizaion[newItemId] = false; //by default the token is not used as collateral
         emit TokenIssued (msg.sender, newItemId);
         return newItemId;
+	
+	//add also the token price
     }
 
     // function tokenURI(uint256 _tokenId) external view returns (string memory);
