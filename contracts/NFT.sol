@@ -12,10 +12,6 @@ contract propNFT is ERC721, Ownable {
     uint256 public tokenCounter;
     uint256 colleteralizedAmount;
     uint256 totalPrice;
-    enum NFTStatus {
-        UNCOLLATERALIZED,
-        COLLATERALIZED
-    }
     
     // struct Property {
 	// 	address _owner;
@@ -25,10 +21,8 @@ contract propNFT is ERC721, Ownable {
 	// } ----------- maybe we will creare a mapping with struct later
 	
 
-	// mapping (uint256 => address) public _tokenToOwner; // althigh in ERC721 we already have a maaping _owners. check if this is necessary
-    mapping (uint256 => uint256) private tokenColleteralizaion;
+    mapping (uint256 => bool) private tokenColleteralizaion;
     mapping (uint256 => uint256) private tokenPrice;
-    mapping (address => uint256) private OwnerToToken;
     mapping(uint256 => string) private tokenURIs;
     //  mapping (uint256 => Property ) private
     event TokenIssued (address owner, uint tokenId);
@@ -42,11 +36,10 @@ contract propNFT is ERC721, Ownable {
 
     function mintNFT(string memory tokenURI) public returns (uint256) {
         uint256 newItemId = tokenCounter;
+	tokenCounter = tokenCounter + 1;
         _safeMint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
-        tokenColleteralizaion[newItemId] = 0;
-        OwnerToToken[msg.sender] = newItemId;      
-        tokenCounter = tokenCounter + 1;
+        tokenColleteralizaion[newItemId] = false; //by default the token is not used as collateral
         emit TokenIssued (msg.sender, newItemId);
         return newItemId;
     }
@@ -57,14 +50,16 @@ contract propNFT is ERC721, Ownable {
         require(_exists(tokenId), "ERC721URIStorage: URI set of nonexistent token");
         tokenURIs[tokenId] = tokenURI;
     }
-    // TODO: modifier verifyCollateralized {
 
-    // }
 
-    // TODO: function _collateralize (unit256 _tokenId, uint256 amount) public {
-    //     emit TokenCollateralized (_tokenId, amount)
-    // }
+    //when a customer uses its NFT as a collateral, he should call this:
+    function _collateralize (unit256 _tokenId, uint256 amount) public {
+        require(msg.sender == ownerOf(tokenId), "The caller is not the owner of the token");
+	tokenColleteralizaion[_tokenId] = true;
+    	emit TokenCollateralized(_tokenId, amount);
+     }
 
+	//to be connected with the ML model
     function _setPrice(uint256 tokenId, uint256 price) public {
         tokenPrice[tokenId] = price;
         emit TokenPriceSet (tokenId, price);
