@@ -1,7 +1,4 @@
-//Contract based on [https://docs.openzeppelin.com/contracts/3.x/erc721](https://docs.openzeppelin.com/contracts/3.x/erc721)
-// SPDX-License-Identifier: MIT
-// credits: https://ethereum.org/en/developers/tutorials/how-to-write-and-deploy-an-nft/#connect-to-ethereum
-pragma solidity ^0.8.0;
+ma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -9,18 +6,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Registry.sol"; //so that to inherit the property struct to use for the metadata of the coin
 
 
-contract propNFT is ERC721, Ownable {
+contract propNFT is ERC721, Ownable, Registry {
     uint256 public tokenCounter;
     uint256 colleteralizedAmount;
     uint256 totalPrice;
-    
-    // struct Property {
-	// 	address _owner;
-	// 	uint sqm; 
-	// 	string _address;
-	// 	uint value;
-	// } ----------- maybe we will creare a mapping with struct later
-	
 
     mapping (uint256 => bool) private tokenColleteralizaion;
     mapping (uint256 => uint256) private tokenPrice;
@@ -38,7 +27,7 @@ contract propNFT is ERC721, Ownable {
 
     function mintNFT(string memory tokenURI) public returns (uint256) {
         uint256 newItemId = tokenCounter;
-	tokenCounter = tokenCounter + 1;
+	    tokenCounter ++;
         _safeMint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
         tokenColleteralizaion[newItemId] = false; //by default the token is not used as collateral
@@ -49,12 +38,12 @@ contract propNFT is ERC721, Ownable {
     }
 
     // function tokenURI(uint256 _tokenId) external view returns (string memory);
+    // to be connected with python script create_URI.py
     
     function _setTokenURI(uint256 tokenId, string memory tokenURI) internal {
         require(_exists(tokenId), "ERC721URIStorage: URI set of nonexistent token");
         tokenURIs[tokenId] = tokenURI;
     }
-
 
     //when a customer uses its NFT as a collateral, he should call this:
     function _collateralize (unit256 _tokenId, uint256 amount) public {
@@ -77,5 +66,10 @@ contract propNFT is ERC721, Ownable {
         return tokenColleteralizaion[tokenId];
     }
 
+    //should be called by us
+    function changeValue(uint256 _tokenId, uint256 _newValue) private {
+        _burn(uint256 _tokenId);
+    }
+    
 }
 
