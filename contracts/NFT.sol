@@ -60,7 +60,8 @@ contract propNFT is ERC721, Ownable {
     //when a customer uses its NFT as a collateral, he should call this:
     //do we want to allow to collateralize only a certain amount?
     function _collateralize (uint256 tokenId, uint256 collateralization_amount, address lender) public existingToken(tokenId) {
-	    uint256 value = _requireCollateralValue(tokenId);
+	require(tokenColleteralizaion[tokenId] = false, "Token already used as collateral");
+	uint256 value = _requireCollateralValue(tokenId);
         
         require (value > collateralization_amount, "Token not worth enough");
         emit TokenCollateralized(tokenId, collateralization_amount);
