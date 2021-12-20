@@ -11,8 +11,8 @@ contract propNFT is ERC721, Ownable {
     address private Validator;
 
     mapping (uint256 => bool) private tokenColleteralizaion;
-    mapping (uint256 => string) _tokenURIs; //private
-    mapping (uint256 => uint256) _idToValue; //mapping from token Id to it's calculated price
+    mapping (uint256 => string) _tokenURIs;
+    mapping (uint256 => uint256) _idToValue; //mapping from token Id to its calculated price
 
     event TokenCollateralized(uint256 tokenId, uint256 amount);
     event priceCalculation(uint256 tokenId);
