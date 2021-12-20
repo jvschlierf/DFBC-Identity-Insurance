@@ -23,8 +23,6 @@ Cryptographic Coin wallets have become much more ubiquitous, potentially through
 In this second scenario, our service has replaced the traditional registry, and properties are now registered solely on the blockchain. Transfers are performed on the chain, reducing transaction costs greatly. Owner can issue NFTs issued against their property, which can serve as collateral to be used in mortgage- or other loans issued by both peers & traditional lenders such as banks.
 
 
-
-
 ## Tech Stack Used:
 Frontend:
 * Javascript

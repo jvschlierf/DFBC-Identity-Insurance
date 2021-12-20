@@ -34,4 +34,5 @@ cache
 artifacts
 
 # telegram credentials
-telegram-bot/credentials.py
+telegram-bot/bot/credentials.py
+
