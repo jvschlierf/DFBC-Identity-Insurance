@@ -42,7 +42,7 @@ contract propNFT is ERC721, Ownable {
         return ownerOf(tokenId);
     }
 
-    //who will mint? we or the customer? validateSender or onlyOwner?
+    //We (the company) mint the NFTs
     function mintNFT(string memory _uri) public validateSender returns(uint256){
         uint256 newItemId = tokenCounter;
         _safeMint(msg.sender, newItemId);
@@ -63,7 +63,7 @@ contract propNFT is ERC721, Ownable {
 	require(tokenColleteralizaion[tokenId] = false, "Token already used as collateral");
 	//uint256 value = _requireCollateralValue(tokenId);
         
-        require (0.8*value > collateralization_amount, "Token not worth enough");
+        require (0.8*value > collateralization_amount, "Token not worth enough"); //set a threshold for the collateral amount
         emit TokenCollateralized(tokenId, collateralization_amount);
         tokenColleteralizaion[tokenId] = true;
      }
@@ -75,7 +75,8 @@ contract propNFT is ERC721, Ownable {
 
 
     //function called by the customer when he wants to use his NFT as collateral
-    //should calculate the value of the NFT
+    //when the event priceCalculation(tokenId) is triggered, we assume that it
+    //connects to the predict_price.py which returns the predicted value of the NFT
     //assume we have this function connected to the python code (price calculation ML model)
     function _requireCollateralValue (uint256 tokenId) internal existingToken(tokenId) returns(uint256) {
             emit priceCalculation(tokenId);
@@ -85,14 +86,9 @@ contract propNFT is ERC721, Ownable {
 
     function burnNFT(uint256 tokenId) public existingToken(tokenId) { //_burn already checks that msg.sender = owner
         _burn(tokenId);
-        //do we leave the token in the mappings..?
         delete tokenColleteralizaion[tokenId];
         delete _tokenURIs[tokenId];
         delete _idToValue[tokenId];
-    }
-    
-    //sell & buy function
-    //inheritance of Registry - try harday
-    
+    }    
     
 }
