@@ -10,7 +10,7 @@ Our mission is to protect owners from property fraud by **storing proof of owner
 ## Our services:
 * Notification in case a change in the off-chain land registry is detected. The owner will be asked to confirm the transfer of ownership. 
 * Property market where onwers of properties listed on the platform are verified through the public ledger. The platform will connect property buyers and sellers and ensure secure deals.
-* In addition, verified owners can have a NFT on a property issued to them, which cam be used as a collateral for loans in CBDC
+* In addition, verified owners can have a NFT on a property issued to them, which can be used as a collateral for loans in CBDC
 * Notification service is subscription-based with regular monthly payments.
 
 ## Scenario:
