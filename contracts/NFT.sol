@@ -57,16 +57,15 @@ contract propNFT is ERC721, Ownable {
         string memory _uri = _tokenURIs[tokenId];
         return _uri;
     }
-    //when a customer uses its NFT as a collateral, he should call this:
-    //do we want to allow to collateralize only a certain amount?
-    function _collateralize (uint256 tokenId, uint256 collateralization_amount, address lender) public existingToken(tokenId) {
+    
+    //when a customer uses its NFT as a collateral, WE should call this:
+    function _collateralize (uint256 tokenId, uint256 collateralization_amount, address lender, uint256 value) public validateSender existingToken(tokenId) {
 	require(tokenColleteralizaion[tokenId] = false, "Token already used as collateral");
-	uint256 value = _requireCollateralValue(tokenId);
+	//uint256 value = _requireCollateralValue(tokenId);
         
-        require (value > collateralization_amount, "Token not worth enough");
+        require (0.8*value > collateralization_amount, "Token not worth enough");
         emit TokenCollateralized(tokenId, collateralization_amount);
         tokenColleteralizaion[tokenId] = true;
-        transferFrom(ownerOf(tokenId), lender, tokenId); //transfer token to lender
      }
 
 
@@ -74,12 +73,15 @@ contract propNFT is ERC721, Ownable {
         return tokenColleteralizaion[tokenId];
     }
 
+
     //function called by the customer when he wants to use his NFT as collateral
     //should calculate the value of the NFT
-    function _requireCollateralValue (uint256 tokenId) private existingToken(tokenId) returns(uint256) {
+    //assume we have this function connected to the python code (price calculation ML model)
+    function _requireCollateralValue (uint256 tokenId) internal existingToken(tokenId) returns(uint256) {
             emit priceCalculation(tokenId);
             return _idToValue[tokenId];
     }
+
 
     function burnNFT(uint256 tokenId) public existingToken(tokenId) { //_burn already checks that msg.sender = owner
         _burn(tokenId);
@@ -88,5 +90,9 @@ contract propNFT is ERC721, Ownable {
         delete _tokenURIs[tokenId];
         delete _idToValue[tokenId];
     }
+    
+    //sell & buy function
+    //inheritance of Registry - try harday
+    
     
 }
