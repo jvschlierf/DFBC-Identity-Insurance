@@ -23,13 +23,13 @@ def RegisterProperty(URL,contract,abi, _Owner_address, _areaSqm, _floor, _zipCod
 	
 	
 
-def MintNFT (URL,contract,abi, uri): # all inputs are strings
+def MintNFT (URL,contract,abi, uri, owner_address): # all inputs are strings
     #connect to the contract
     web3 = Web3(Web3.HTTPProvider(URL))
     web3.eth.defaultAccount = web3.toChecksumAddress('0x5face5582CaE06bE3E51B05DA2c3853D353A5CC5')
     abi = json.loads(abi)
     address = web3.toChecksumAddress(contract)
     contract = web3.eth.contract(address = address, abi = abi) # connect to the nft contract
-    contract.functions.mintNFT(uri).call()	
+    contract.functions.mintNFT(uri, owner_address).call()	
 	
 
