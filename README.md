@@ -25,9 +25,8 @@ In this second scenario, our service has replaced the traditional registry, and 
 
 ## Tech Stack Used:
 Frontend:
-* Javascript
+* [Telegram Bot](https://t.me/LandReg_bot)
 * React Framework
-* Metamask Chrome Extension
 
 Backend:
 * Ethereum Blockchain
@@ -37,3 +36,18 @@ Backend:
 * [Pinata](https://app.pinata.cloud/) for storing NFT metadata
 * [Brownie](https://eth-brownie.readthedocs.io/en/stable/toctree.html) to compile and deploy contracts
 * [Metamask](https://metamask.io/index.html) to manage wallets
+
+## Repository Structure
+* build: Compiled Contracts & Deployment Information from Brownie
+* contracts: Solidity Contracts: 
+  * Registry.sol: Contract signing up customers, registering properties & creating the blockchain registry
+  * NFT.sol: Contract that mints the NFT at the Users request
+  * Subscription.sol: Contract to handle the subscription payments for verifying User's property on the current, non-blockchain registry
+* helpers: Python backend scripts that handle price prediction, ownership check & connection between Blockchain & Telegram bot
+* scripts: Python backend scripts for deployment using Brownie & for minting the NFT
+* telegram: Front end telegram bot that the Customers interact with
+
+## Deployments
+* [Registry Contract](https://ropsten.etherscan.io/address/0x09eA2539Db7aE5b2dA9b7438d6D8cc8389bE18Ca)
+* [NFT Contract](https://ropsten.etherscan.io/address/0x99c1ecA0e4F90ecaCCa011112409B0f9442395dB)
+
