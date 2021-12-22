@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract propNFT is ERC721, Ownable { //Registry
     uint256 public tokenCounter;
-    address private Validator; //set value to our account (?)
+    address private Validator;
 
     mapping (uint256 => bool) private tokenColleteralizaion;
     mapping (uint256 => string) _tokenURIs;
@@ -39,7 +39,7 @@ contract propNFT is ERC721, Ownable { //Registry
     }
     
     function isOwner(uint256 tokenId) public view existingToken(tokenId) returns(address){
-        return ownerOf(tokenId);
+        return _owners[tokenId];
     }
 
     //We (the company) mint the NFTs
@@ -61,7 +61,7 @@ contract propNFT is ERC721, Ownable { //Registry
     //when a customer uses its NFT as a collateral, WE should call this.
     //the value is calculated through. theML model
     function _collateralize (uint256 tokenId, uint256 collateralization_amount, uint256 value) public validateSender existingToken(tokenId) {
-	    require(tokenColleteralizaion[tokenId] = false, "Token already used as collateral");        
+	    require(tokenColleteralizaion[tokenId] == false, "Token already used as collateral");        
         require ((8*value)/10 > collateralization_amount, "Token not worth enough"); //set a threshold for the collateral amount
         
         emit TokenCollateralized(tokenId, collateralization_amount);
@@ -93,5 +93,6 @@ contract propNFT is ERC721, Ownable { //Registry
         delete tokenColleteralizaion[tokenId];
         delete _tokenURIs[tokenId];
     }    
+    
     
 }
