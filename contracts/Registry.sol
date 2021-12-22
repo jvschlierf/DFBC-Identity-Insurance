@@ -116,11 +116,9 @@ contract  Registry { //registry contract inheriting from the ownable contract
         revenue += registration_price;
     }
 
-
     receive () external payable isRegistered {
         customerBalance[msg.sender] += msg.value; // increase the owners balance
     }
-
 
     function Transfer (uint _property_id, address _new_owner_address) public { //Change in ownership  - DO WE NEED A VALIDATION IN HERE?
         require(msg.sender == propertyToOwner[_property_id], "Only Owners can transfer property. We do not have you as owner of this property.");  //First we check if the person transferring the property actually owns it or not

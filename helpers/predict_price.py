@@ -1,15 +1,16 @@
-def predict(surface, rooms, floor):
+import pickle
+import pandas as pd
+import numpy as np
 
-    import pickle
-    import pandas as pd
-    import numpy as np
+
+def predict(surface, rooms, floor):
 
     filename = 'hgbr_final.pickle'
     hgbr = pickle.load(open(filename, 'rb'))
 
     test = pd.DataFrame(data={'Surface' : [int(surface)], 'Rooms' : str(rooms), 'Floor' : str(floor)})
     
-    return float(np.exp(hgbr.predict(test)))
+    return int(np.exp(hgbr.predict(test)))
 
 class DenseTransformer():
 

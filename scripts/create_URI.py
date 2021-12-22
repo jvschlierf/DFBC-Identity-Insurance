@@ -126,5 +126,5 @@ def write_metadata_v2(property_id, property_address_country, property_address_re
         jsonfile['attributes'][0]['property_size'] = property_size
         
         with open(metadata_file_name, "w") as file:
-            json.dump(collectible_metadata, file)
+            json.dump(jsonfile, file)
 

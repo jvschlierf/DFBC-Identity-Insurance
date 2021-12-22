@@ -13,7 +13,6 @@ contract propNFT is ERC721, Ownable { //Registry
 
     mapping (uint256 => bool) private tokenColleteralizaion;
     mapping (uint256 => string) _tokenURIs;
-    mapping (uint256 => uint256) _idToValue; //mapping from token Id to its calculated price
 
     event TokenCollateralized(uint256 tokenId, uint256 amount);
     event priceCalculation(uint256 tokenId);
@@ -22,7 +21,6 @@ contract propNFT is ERC721, Ownable { //Registry
         tokenCounter = 0;
         Validator = msg.sender;
     }
-
 
     modifier existingToken(uint256 tokenId) {
         require(_exists(tokenId), "ERC721URIStorage: URI set of nonexistent token");
@@ -82,9 +80,11 @@ contract propNFT is ERC721, Ownable { //Registry
     //assume we have this function connected to the python code (price calculation ML model)
     function _requireCollateralValue (uint256 tokenId) public existingToken(tokenId) returns(uint256) {
             emit priceCalculation(tokenId); 
-                    //when triggered, this event connects to the ML model 
+                    
+                    // value = get_nft_value()
+                    //when triggered, this event connects to the ML model
                     //and calculates the value of the token that is returned here:
-            return _idToValue[tokenId]; 
+            return value; 
     }
 
 
@@ -92,7 +92,6 @@ contract propNFT is ERC721, Ownable { //Registry
         _burn(tokenId);
         delete tokenColleteralizaion[tokenId];
         delete _tokenURIs[tokenId];
-        delete _idToValue[tokenId];
     }    
     
 }
