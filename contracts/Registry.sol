@@ -32,7 +32,6 @@ contract  Registry { //registry contract inheriting from the ownable contract
         uint id;        
         string firstName;
         string lastName;
-        string gender;  //We accomodate more than 2 genders, so do not use a bool here
         string codiceFisc;
         string docType;
         string docNumber;
@@ -74,7 +73,7 @@ contract  Registry { //registry contract inheriting from the ownable contract
                                 string region, string city, string street, string streetNumber, 
                                 string adressAdditional, string houseType);
     event NewOwnerCreated (address owner_address, uint id,  string firstName, string lastName, 
-                            string gender, string codiceFiscale, string docType, string docNumber);
+                             string codiceFiscale, string docType, string docNumber);
     event OwnershipTransferred (address new_owner, uint propert_id);
 
     //declaring arrays of the two structs created above
@@ -83,17 +82,17 @@ contract  Registry { //registry contract inheriting from the ownable contract
     address[] public addresses_list;
 
     function registerOwner(string memory _firstName, string memory _lastName, 
-                            string memory _gender, string memory _codiceFiscale, 
-                                string memory _docType, string memory _docNumber) public {
-        require (address_to_owner[msg.sender] == 0, "Address is already registered."); // checking if owner is already registered or not
-        owners.push(Owner(owner_id,_firstName, _lastName, _gender, 
+                            address _address, string memory _codiceFiscale, 
+                                string memory _docType, string memory _docNumber) validateSender public {
+        require (address_to_owner[_address] == 0, "Address is already registered."); // checking if owner is already registered or not
+        owners.push(Owner(owner_id,_firstName, _lastName, 
                             _codiceFiscale, _docType, _docNumber));
-        addresses_list.push(msg.sender);
-        emit NewOwnerCreated(msg.sender, owner_id, _firstName, _lastName, _gender, 
+        addresses_list.push(_address);
+        emit NewOwnerCreated(_address, owner_id, _firstName, _lastName,  
                                 _codiceFiscale, _docType, _docNumber);
-        address_to_owner[msg.sender] = owner_id;
+        address_to_owner[_address] = owner_id;
         owner_id ++;
-        customerBalance[msg.sender] = 0;
+        customerBalance[_address] = 0;
     }
 
     //ownership is verified before construction is called
