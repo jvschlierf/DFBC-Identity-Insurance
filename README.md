@@ -32,8 +32,8 @@ Frontend:
 Backend:
 * Ethereum Blockchain
 * Solidity
-* [Alchemy](https://www.alchemy.com/?referral=affiliate%3A3bda2c8a-2393-4923-a7d9-f98c7c2f4520) to connect to Etherium network
+* [Infura](https:https://infura.io) to connect to Etherium network
 * [Ropsten](https://faucet.ropsten.be/) testnetwork
 * [Pinata](https://app.pinata.cloud/) for storing NFT metadata
-* [Hardhat](https://hardhat.org) to compile and deploy contracts
+* [Brownie](https://eth-brownie.readthedocs.io/en/stable/toctree.html) to compile and deploy contracts
 * [Metamask](https://metamask.io/index.html) to manage wallets
