@@ -25,7 +25,7 @@ In this second scenario, our service has replaced the traditional registry, and 
 
 ## Tech Stack Used:
 Frontend:
-* Telegram Bot
+* [Telegram Bot](https://t.me/LandReg_bot)
 * React Framework
 
 Backend:
