@@ -3,6 +3,7 @@ from brownie import accounts, Registry, propNFT, Subscription, network
 
 def deploy_registry():
     account = get_account()
+    print(account)
     print(network.show_active())
     Registry.deploy({"from": account})
     # Subscription.deploy({"from": account})

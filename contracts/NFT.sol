@@ -78,13 +78,13 @@ contract propNFT is ERC721 { //Registry
     //when the event priceCalculation(tokenId) is triggered, we assume that it
     //connects to the predict_price.py which returns the predicted value of the NFT
     //assume we have this function connected to the python code (price calculation ML model)
-    function _requireCollateralValue (uint256 tokenId) public existingToken(tokenId) returns(uint256) {
+    function _requireCollateralValue (uint256 tokenId) public existingToken(tokenId)  { // returns(uint256)
             emit priceCalculation(tokenId); 
                     
                     // value = get_nft_value()
                     //when triggered, this event connects to the ML model
                     //and calculates the value of the token that is returned here:
-            return value; 
+            // return value; 
     }
 
 
