@@ -21,5 +21,5 @@ def get_account():
         return accounts.load("testacc")
 
 def main():
-    deploy_registry()
+    # deploy_registry()
     deploy_nft()

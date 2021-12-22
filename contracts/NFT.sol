@@ -42,9 +42,9 @@ contract propNFT is ERC721 { //Registry
     }
 
     //We (the company) mint the NFTs
-    function mintNFT(string memory _uri) public validateSender returns(uint256){
+    function mintNFT(string memory _uri, address _owner) public validateSender returns(uint256){
         uint256 newItemId = tokenCounter;
-        _safeMint(msg.sender, newItemId);
+        _safeMint(_owner, newItemId);
         _setTokenURI(newItemId, _uri);
         tokenCounter ++;
 
