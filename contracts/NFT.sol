@@ -39,7 +39,7 @@ contract propNFT is ERC721, Ownable { //Registry
     }
     
     function isOwner(uint256 tokenId) public view existingToken(tokenId) returns(address){
-        return _owners[tokenId];
+        return ERC721.ownerOf[tokenId];
     }
 
     //We (the company) mint the NFTs
