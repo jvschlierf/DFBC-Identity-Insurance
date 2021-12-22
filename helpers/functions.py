@@ -12,7 +12,6 @@ def RegisterOwner (URL,contract,abi,_firstName,_lastName,owner_address, _codiceF
     contract.functions.registerOwner(_firstName,_lastName,owner_address, _codiceFiscale, _docType, _docNumber).call()
 
 
-
 def RegisterProperty(URL,contract,abi, _Owner_address, _areaSqm, _floor, _zipCode, _country, _region, _city, _street,  _streetNumber, _addressAdditional, _houseType):
 	web3 = Web3(Web3.HTTPProvider(URL))
     web3.eth.defaultAccount = web3.toChecksumAddress('0x5face5582CaE06bE3E51B05DA2c3853D353A5CC5')
