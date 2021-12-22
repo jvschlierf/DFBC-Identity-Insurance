@@ -42,7 +42,8 @@ contract  Registry { //registry contract inheriting from the ownable contract
     mapping (address => uint) public ownerPropertyCount; //in case owner has more than 1 property
     mapping (uint => address) private propertyToOwner;
     mapping (address => uint) public customerBalance;
-	
+	mapping (address => uint []) public owner_to_property;
+    mapping (uint => uint) public all_prop_id_to_personal_prop_id;
     modifier validateSender {
         require(msg.sender == Validator, "Permission denied");
         _;
@@ -108,6 +109,8 @@ contract  Registry { //registry contract inheriting from the ownable contract
                                     _street, _streetNumber, _addressAdditional, _houseType);
         propertyToOwner[property_id] = _Owner;   //using the mapping
         ownerPropertyCount[_Owner]++;   //using the mapping   
+        owner_to_property[_Owner].push(property_id);
+        all_prop_id_to_personal_prop_id[property_id] = ownerPropertyCount[_Owner];
         property_id ++;
         customerBalance[_Owner] -= registration_price; // after successful listing, deduct the fee from customers account balance
         revenue += registration_price;
@@ -124,7 +127,11 @@ contract  Registry { //registry contract inheriting from the ownable contract
         require(customerBalance[_new_owner_address] >= transfer_price, "Balance of a new owner is too low to transfer property.");
         require(address_to_owner[_new_owner_address] != 0, "New owner is not registered");
         propertyToOwner[_property_id] = _new_owner_address;
+        owner_to_property[msg.sender][all_prop_id_to_personal_prop_id[property_id]] = owner_to_property[msg.sender][owner_to_property[msg.sender].length -1];
+        owner_to_property[msg.sender].pop();
+        owner_to_property[_new_owner_address].push(_property_id);
         ownerPropertyCount[_new_owner_address]++; // incresing new owner's property count
+        all_prop_id_to_personal_prop_id[property_id] = ownerPropertyCount[_new_owner_address];
         ownerPropertyCount[msg.sender]--; // decreasing old owner's property count
         emit OwnershipTransferred (_new_owner_address, _property_id);
         //the old address would still be pointing to the property which has been transferred
@@ -224,7 +231,11 @@ contract  Registry { //registry contract inheriting from the ownable contract
         address owner_address = propertyToOwner[_id];
         uint ownerId = address_to_owner[owner_address];
         return (owners[ownerId - 1].firstName, owners[ownerId - 1].lastName, owner_address);
-    }      
+    }
+
+    function find_properties(address _owner) public view validateSender returns (uint[] memory) {
+        return owner_to_property[_owner];
+    } 
 
 }
 

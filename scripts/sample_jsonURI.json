@@ -10,8 +10,10 @@
             "city": "",
             "street": "",
             "number": "",
-            "additional_info": ""
-            
+            "cap": "",
+            "property_type": "",
+            "floors": "",
+            "size": ""
         }
         
 

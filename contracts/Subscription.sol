@@ -78,6 +78,9 @@ contract Subscription is Registry {
         return subscription_price;
     }
 
+    function show_sub_count () public view returns (uint) {
+        return subscribers_count - 1;
+    }
 }
 
 
