@@ -5,7 +5,7 @@ def deploy_registry():
     account = get_account()
     print(network.show_active())
     Registry.deploy({"from": account})
-    Subscription.deploy({"from": account})
+    # Subscription.deploy({"from": account})
 
 def deploy_nft():
     account = get_account()
@@ -19,5 +19,6 @@ def get_account():
     else:
         return accounts.load("testacc")
 
-# def main():
-#     deploy_registry()
+def main():
+    deploy_registry()
+    deploy_nft()
