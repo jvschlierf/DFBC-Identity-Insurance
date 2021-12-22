@@ -96,3 +96,35 @@ def create_URI(property_id, property_address_country, property_address_region,
 
 
 
+import sample_jsonURI
+
+def write_metadata_v2(property_id, property_address_country, property_address_region,
+                    property_address_city, property_address_street,
+                    property_address_streetnum, cap, property_type, floors, property_size):
+    
+    jsonfile = sample_jsonURI.sample_URI
+
+    metadata_file_name = (
+        "metadata_{}.json".format(str(property_id))
+    )
+    if Path(metadata_file_name).exists():
+        print(
+            "{} already found, delete it to overwrite!".format(
+                metadata_file_name)
+        )
+    else:
+        print("Creating Metadata file: " + metadata_file_name)
+        jsonfile['attributes'][0]['id'] = property_id
+        jsonfile['attributes'][0]['country'] = property_address_country
+        jsonfile['attributes'][0]['region'] = property_address_region
+        jsonfile['attributes'][0]['city'] = property_address_city
+        jsonfile['attributes'][0]['street'] = property_address_street
+        jsonfile['attributes'][0]['number'] = property_address_streetnum
+        jsonfile['attributes'][0]['cap'] = cap
+        jsonfile['attributes'][0]['property_type'] = property_type
+        jsonfile['attributes'][0]['floors'] = floors
+        jsonfile['attributes'][0]['property_size'] = property_size
+        
+        with open(metadata_file_name, "w") as file:
+            json.dump(collectible_metadata, file)
+
