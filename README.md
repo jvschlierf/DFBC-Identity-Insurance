@@ -25,9 +25,8 @@ In this second scenario, our service has replaced the traditional registry, and 
 
 ## Tech Stack Used:
 Frontend:
-* Javascript
+* Telegram Bot
 * React Framework
-* Metamask Chrome Extension
 
 Backend:
 * Ethereum Blockchain
