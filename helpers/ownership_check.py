@@ -1,6 +1,7 @@
 import json
 from web3 import Web3
 import threading
+import pandas as pd
 
 def check_ownership(URL,contract,abi): # all inputs are strings
     #connect to the contract
@@ -40,8 +41,6 @@ def check_ownership(URL,contract,abi): # all inputs are strings
     
     return notify_list
 
-
-	
 def check_ownership_single_customer(URL,contract,abi,address): # all inputs are strings
     #connect to the contract
     web3 = Web3(Web3.HTTPProvider(URL))
@@ -78,10 +77,8 @@ def check_ownership_single_customer(URL,contract,abi,address): # all inputs are 
             # that instead of the owner name
     
     return notify
-
 	
 #function for that loops check_onwership every 7 days 
-
 
 t = None
 
