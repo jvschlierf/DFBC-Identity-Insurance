@@ -5,10 +5,11 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+//import "./Registry.sol"; - Solidity memory limit
 
-contract propNFT is ERC721, Ownable {
+contract propNFT is ERC721, Ownable { //Registry
     uint256 public tokenCounter;
-    address private Validator;
+    address private Validator; //set value to our account (?)
 
     mapping (uint256 => bool) private tokenColleteralizaion;
     mapping (uint256 => string) _tokenURIs;
@@ -33,6 +34,7 @@ contract propNFT is ERC721, Ownable {
         _;
     }
 
+    //URIs are generated through the python script create_URI.py
     function _setTokenURI(uint256 tokenId, string memory _uri) internal existingToken(tokenId) {
         require(_isApprovedOrOwner(msg.sender, tokenId), "ERC721 transfer caller is nor owner not approved");
         _tokenURIs[tokenId] = _uri;
@@ -58,7 +60,8 @@ contract propNFT is ERC721, Ownable {
         return _uri;
     }
     
-    //when a customer uses its NFT as a collateral, WE should call this:
+    //when a customer uses its NFT as a collateral, WE should call this.
+    //the value is calculated through. theML model
     function _collateralize (uint256 tokenId, uint256 collateralization_amount, uint256 value) public validateSender existingToken(tokenId) {
 	    require(tokenColleteralizaion[tokenId] = false, "Token already used as collateral");        
         require ((8*value)/10 > collateralization_amount, "Token not worth enough"); //set a threshold for the collateral amount
@@ -77,9 +80,11 @@ contract propNFT is ERC721, Ownable {
     //when the event priceCalculation(tokenId) is triggered, we assume that it
     //connects to the predict_price.py which returns the predicted value of the NFT
     //assume we have this function connected to the python code (price calculation ML model)
-    function _requireCollateralValue (uint256 tokenId) internal existingToken(tokenId) returns(uint256) {
-            emit priceCalculation(tokenId);
-            return _idToValue[tokenId];
+    function _requireCollateralValue (uint256 tokenId) public existingToken(tokenId) returns(uint256) {
+            emit priceCalculation(tokenId); 
+                    //when triggered, this event connects to the ML model 
+                    //and calculates the value of the token that is returned here:
+            return _idToValue[tokenId]; 
     }
 
 
