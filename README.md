@@ -38,7 +38,6 @@ Backend:
 * [Metamask](https://metamask.io/index.html) to manage wallets
 
 ## Repository Structure
-
 * build: Compiled Contracts & Deployment Information from Brownie
 * contracts: Solidity Contracts: 
   * Registry.sol: Contract signing up customers, registering properties & creating the blockchain registry
@@ -47,3 +46,8 @@ Backend:
 * helpers: Python backend scripts that handle price prediction, ownership check & connection between Blockchain & Telegram bot
 * scripts: Python backend scripts for deployment using Brownie & for minting the NFT
 * telegram: Front end telegram bot that the Customers interact with
+
+## Deployments
+* [Registry Contract](https://ropsten.etherscan.io/address/0x09eA2539Db7aE5b2dA9b7438d6D8cc8389bE18Ca)
+* [NFT Contract](https://ropsten.etherscan.io/address/0x99c1ecA0e4F90ecaCCa011112409B0f9442395dB)
+
