@@ -3,7 +3,6 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 //import "./Registry.sol"; - Solidity memory limit
 
@@ -69,7 +68,8 @@ contract propNFT is ERC721, Ownable { //Registry
      }
 
 
-    function _checkCollateralization (uint256 tokenId) public view existingToken(tokenId) onlyOwner() returns(bool) {
+    function _checkCollateralization (uint256 tokenId) public view existingToken(tokenId) returns(bool) {
+    	require(msg.sender == isOwner(tokenId), "Ownable: caller is not the owner");
         return tokenColleteralizaion[tokenId];
     }
 
