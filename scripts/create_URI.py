@@ -38,7 +38,7 @@ def write_metadata(property_id, property_address_country, property_address_regio
         jsonfile['attributes'][0]['cap'] = cap
         jsonfile['attributes'][0]['property_type'] = property_type
         jsonfile['attributes'][0]['floors'] = floors
-        jsonfile['attributes'][0]['property_size'] = property_size
+        jsonfile['attributes'][0]['size'] = property_size
         
         jsonfile.close()
 
