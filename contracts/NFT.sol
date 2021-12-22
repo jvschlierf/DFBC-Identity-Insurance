@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 //import "./Registry.sol"; - Solidity memory limit
 
-contract propNFT is ERC721, Ownable { //Registry
+contract propNFT is ERC721 { //Registry
     uint256 public tokenCounter;
     address private Validator;
 
