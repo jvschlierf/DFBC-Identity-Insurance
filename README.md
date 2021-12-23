@@ -48,6 +48,6 @@ Backend:
 * telegram: Front end telegram bot that the Customers interact with
 
 ## Deployments
-* [Registry Contract](https://ropsten.etherscan.io/address/0x09eA2539Db7aE5b2dA9b7438d6D8cc8389bE18Ca)
-* [NFT Contract](https://ropsten.etherscan.io/address/0x99c1ecA0e4F90ecaCCa011112409B0f9442395dB)
+* [Registry Contract](https://ropsten.etherscan.io/address/0x645342aa53571abc47ea292cea3ad00c5439e69f)
+* [NFT Contract](https://ropsten.etherscan.io/address/0x4ed5e88bfeb02cd44ec18bb23dfc74abc66acf47)
 
