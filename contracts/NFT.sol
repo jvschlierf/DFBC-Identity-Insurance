@@ -32,8 +32,8 @@ contract propNFT is ERC721 { //Registry
     }
 
     //URIs are generated through the python script create_URI.py
-    function _setTokenURI(uint256 tokenId, string memory _uri) internal existingToken(tokenId) {
-        require(_isApprovedOrOwner(msg.sender, tokenId), "ERC721 transfer caller is nor owner not approved");
+    function _setTokenURI(uint256 tokenId, string memory _uri) internal validateSender existingToken(tokenId) {
+        // require(_isApprovedOrOwner(msg.sender, tokenId), "ERC721 transfer caller is nor owner not approved");
         _tokenURIs[tokenId] = _uri;
     }
     
@@ -41,7 +41,7 @@ contract propNFT is ERC721 { //Registry
         return ERC721.ownerOf(tokenId);
     }
 
-    //We (the company) mint the NFTs
+    // We (the company) mint the NFTs
     function mintNFT(string memory _uri, address _owner) public validateSender returns(uint256){
         uint256 newItemId = tokenCounter;
         _safeMint(_owner, newItemId);
