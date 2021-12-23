@@ -1,6 +1,6 @@
 # Blockchain-based land registry
 
-<img src="https://img.shields.io/badge/Ethereum-20232A?style=for-the-badge&logo=ethereum&logoColor=white">
+<img src="https://img.shields.io/badge/Ethereum-20232A?style=for-the-badge&logo=ethereum&logoColor=white"> [<img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white">](https://t.me/LandReg_bot)
 
 ## Project Description:
 Conventional land registry systems can be unreliable when it comes to checking the ownership of the property, which opens up an opportunity for malicious behaviour by people selling property that does not belong to them. Property-related fraud might not be as common as other kinds of fraud, but it is definetely one of the most painful and costly for the property owners who have to go through a legal process to revert the already happened transfer of ownership.  
@@ -13,6 +13,8 @@ Our mission is to protect owners from property fraud by **storing proof of owner
 * In addition, verified owners can have a NFT on a property issued to them, which can be used as a collateral for loans in CBDC
 * Notification service is subscription-based with regular monthly payments.
 
+Try it out with our [Land registry bot](https://t.me/LandReg_bot)
+
 ## Scenario:
 We imagine this project two work in two scenarios, aiding in the transition from the first to the second: 
 
@@ -22,11 +24,9 @@ Cryptographic Coin wallets have become much more ubiquitous, potentially through
 ### Scenario 2:
 In this second scenario, our service has replaced the traditional registry, and properties are now registered solely on the blockchain. Transfers are performed on the chain, reducing transaction costs greatly. Owner can issue NFTs issued against their property, which can serve as collateral to be used in mortgage- or other loans issued by both peers & traditional lenders such as banks.
 
-
 ## Tech Stack Used:
 Frontend:
-* [Telegram Bot](https://t.me/LandReg_bot)
-* React Framework
+* [python-telegram-bot](https://python-telegram-bot.readthedocs.io/en/stable/)
 
 Backend:
 * Ethereum Blockchain
@@ -45,7 +45,7 @@ Backend:
   * Subscription.sol: Contract to handle the subscription payments for verifying User's property on the current, non-blockchain registry
 * helpers: Python backend scripts that handle price prediction, ownership check & connection between Blockchain & Telegram bot
 * scripts: Python backend scripts for deployment using Brownie & for minting the NFT
-* telegram: Front end telegram bot that the Customers interact with
+* telegram: Front-end telegram bot that the Customers interact with
 
 ## Deployments
 * [Registry Contract](https://ropsten.etherscan.io/address/0x645342aa53571abc47ea292cea3ad00c5439e69f)
