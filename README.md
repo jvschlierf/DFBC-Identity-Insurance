@@ -49,5 +49,5 @@ Backend:
 
 ## Deployments
 * [Registry Contract](https://ropsten.etherscan.io/address/0x645342aa53571abc47ea292cea3ad00c5439e69f)
-* [NFT Contract](https://ropsten.etherscan.io/address/0x4ed5e88bfeb02cd44ec18bb23dfc74abc66acf47)
+* [NFT Contract](https://ropsten.etherscan.io/address/0x38d8a9E1CF52D881B533165C7A8B4360E76dA630)
 
