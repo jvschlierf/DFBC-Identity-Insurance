@@ -1,17 +1,17 @@
 from brownie import accounts, Registry, propNFT, Subscription, network
-# import os
+import os
 
 def deploy_registry():
     account = get_account()
     # account.deploy(Registry, amount=100000000000)
-    # Subscription.deploy({"from": account})
-    Registry.deploy({"from": account, "amout": 100000000000})
+    Registry.deploy({"amount": 100000000000000000, "gas_limit": 8000000, "from": account})
+    # Registry.deploy({"from": account, "gas_limit": 8000000, "amount": 10000000})
 
 def deploy_nft():
     account = get_account()
-    # publish_source = True if os.getenv("ETHERSCAN_TOKEN") else False
-    # account.deploy(propNFT, amount=100000000000)
-    propNFT.deploy({"from": account, "amout": 100000000000})
+    # account.deploy(propNFT, amount = 100000000000)
+    propNFT.deploy({"from": account})
+    # propNFT.deploy({"from": account, "gas_limit":  8000000, "amount": 10000000})
     
 
 def get_account():
@@ -22,7 +22,7 @@ def get_account():
 
 def main():
 
-    deploy_nft()
     deploy_registry()
+    deploy_nft()
     
     
