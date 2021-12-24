@@ -11,7 +11,7 @@ Our mission is to protect owners from property fraud by **storing proof of owner
 
 #### Curruntly available:
 * Registration of a property ownership on a blockchain
-* Varified owners can have a NFT on a property issued for them, which can be used as a collateral for loans in CBDC
+* Verified owners can have a NFT on a property issued for them, which can be used as a collateral for loans in CBDC
 * Price estimation of a property
 
 #### To be anticipated in the next release:
